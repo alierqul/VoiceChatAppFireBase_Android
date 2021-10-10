@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="headerXXL">25sp</dimen>
+    <dimen name="headerXL">20sp</dimen>
+    <dimen name="headerL">15sp</dimen>
+    <dimen name="bottomNavigatorHeight">50dp</dimen>
+    <dimen name="paddingL">20dp</dimen>
+    <dimen name="paddingXL">25dp</dimen>
+    <dimen name="paddingM">10dp</dimen>
+    <dimen name="heightTextMessage">100dp</dimen>
+    <dimen name="headerM">12sp</dimen>
+    <dimen name="headerS">5sp</dimen>
+</resources>

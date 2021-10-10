@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="50dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="@string/forgetme"
+        android:textColor="@color/white"
+        android:textSize="@dimen/headerXXL"
+        android:textStyle="bold"/>
+    <TextView
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="@string/registered_emailid"
+        android:textColor="@color/white_greyish"
+        android:textSize="@dimen/headerL"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/registered_emailid"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:drawableLeft="@drawable/email"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="@dimen/headerL" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="@color/white_greyish" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp" >
+
+
+
+        <TextView
+            android:id="@+id/forgot_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="right"
+            android:text="@string/forgotPassword"
+            android:textColor="@color/white"
+            android:textSize="@dimen/headerL"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_marginTop="30dp"
+            android:id="@+id/EmailVerifiedSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/forgot_button"
+            android:layout_alignParentRight="true"
+            android:text="@string/EmailVerifiedSend"
+            android:textColor="@color/white"
+            android:textSize="@dimen/headerL"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/backToLoginBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="30dp"
+            android:layout_below="@id/forgot_button"
+            android:text="@string/back"
+            android:textColor="@color/white"
+            android:textSize="@dimen/headerL"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

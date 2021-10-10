@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">VoiceChatApp</string>
+    <string name="action_settings">Ayarlar</string>
+    <!--    Login Panel     -->
+    <string name="login">Giriş Yap</string>
+    <string name="email">E-Posta Adresi</string>
+    <string name="passowrd">Şifre</string>
+    <string name="show_pwd">Şifre Göster</string>
+    <string name="hide_pwd">Şifre Gizle</string>
+    <string name="forgot">Giriş Yapamıyorum</string>
+    <string name="closebutton">Programdan Çıkmak istiyorum.</string>
+    <string name="newUser">Henüz Üye Değil misin? Şimdi Üye Ol.</string>
+    <!--    Register Panel     -->
+    <string name="signUp">Kayıt Ol</string>
+    <string name="fullName">İsim Giriniz:</string>
+    <string name="confirmPassword">Şifre Tekrar</string>
+    <string name="terms_conditions">Kayıt Ol"a tıklayarak tüm Şartları ve Koşulları kabul etmiş olursunuz.</string>
+    <string name="already_user">Hesabınız var mı? Giriş yapın.</string>
+    <!--    ForgetPassword Panel     -->
+    <string name="registered_emailid">Kayıtlı E-posta adresinizi giriniz:</string>
+    <string name="back">Geri</string>
+    <string name="cancel">iptal</string>
+    <string name="forgotPassword">Şifremi Hatırlamıyorum.</string>
+    <string name="EmailVerifiedSend">Onay Maili Tekrar Gönder.</string>
+    <string name="forgetme">Hatırlatma</string>
+    <!--    Başlıklar     -->
+    <string name="navMessages">Mesajlar</string>
+    <string name="navNotificatios">Bildirimler</string>
+    <string name="navProfile">Profilim</string>
+    <string name="navSearch">Arama</string>
+    <!--    Uyarı Mesajları     -->
+    <string name="invalidEmail">Geçersiz Bir Eposta Girdiniz</string>
+    <string name="invalidPassword">Şifreniz en az 6 karakter olmalı</string>
+    <string name="invalidName">Sizi tanımak isteriz.</string>
+    <string name="invalidPassword2">Şifreler Eşleşmiyor.</string>
+    <string name="invalidContract">Sözleşme kurallarını okuyup onaylamanız gerekiyor.</string>
+    <string name="invalidDatabase">Kayıt Sırasında bir hata oldu.\nLüfen Bize bildiriniz.</string>
+    <string name="edit">Düzenle</string>
+    <string name="exit">Oturumu Kapat</string>
+    <string name="navNewMessages">Yeni Mesaj</string>
+</resources>

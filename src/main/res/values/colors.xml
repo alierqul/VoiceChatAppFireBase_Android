@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blue">#2196F3</color>
+    <color name="buleDark">#1976D2</color>
+    <color name="blueLight">#BBDEFB</color>
+    <color name="teal">#009688</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="background_color">#009688</color>
+    <color name="PrimaryTextColor">#FFFFFF</color>
+    <color name="SecondaryTextColor">#757575</color>
+    <color name="GreysiTextColor">#EEEEEE</color>
+    <color name="donuk_siyah">#99000000</color>
+    <color name="gri">#bfbfbf</color>
+    <color name="yesil">#05df29</color>
+    <color name="white_greyish">#EEEEEE</color>
+
+</resources>

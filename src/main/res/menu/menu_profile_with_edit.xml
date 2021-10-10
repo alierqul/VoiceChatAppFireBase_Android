@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_edit"
+        android:icon="@drawable/ic_pen"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+        android:title="@string/edit">
+    </item>
+    <item
+        android:id="@+id/menu_exit"
+        android:icon="@drawable/close"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+        android:title="@string/exit">
+    </item>
+</menu>

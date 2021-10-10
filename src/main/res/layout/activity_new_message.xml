@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+
+    tools:context=".home.ActivityNewMessage"
+    android:background="@color/gri">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarMessages"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottomNavigatorHeight"
+        android:background="@color/blue">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/btn_Back"
+                android:src="@drawable/ic_back"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+
+            <TextView
+
+                android:id="@+id/tv_friendName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="@string/navNewMessages"
+                android:textColor="@color/PrimaryTextColor"
+                android:textSize="@dimen/headerXL"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/containerMessages"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbarMessages"
+        android:layout_marginBottom="@dimen/heightTextMessage"
+        android:padding="@dimen/paddingL" />
+    <androidx.cardview.widget.CardView
+
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/heightTextMessage"
+        card_view:cardBackgroundColor="@color/blue"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="4dp"
+        card_view:cardUseCompatPadding="true">
+        <RelativeLayout
+            android:padding="@dimen/paddingM"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <EditText
+                android:id="@+id/edtMessage"
+                android:textColor="@color/PrimaryTextColor"
+                android:layout_marginEnd="@dimen/paddingM"
+                android:layout_centerVertical="true"
+                android:hint="Mesajınız"
+                android:layout_toLeftOf="@id/btn_senVoice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/btn_senVoice"
+                android:layout_marginEnd="@dimen/paddingL"
+                android:layout_centerVertical="true"
+                android:background="@drawable/ic_voice"
+                android:layout_toLeftOf="@id/btn_senMessage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+            <ImageView
+
+                android:id="@+id/btn_senMessage"
+                android:layout_marginEnd="@dimen/paddingL"
+                android:layout_centerVertical="true"
+                android:background="@drawable/ic_send"
+                android:layout_alignParentEnd="true"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

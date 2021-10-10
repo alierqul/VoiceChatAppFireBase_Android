@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/paddingM">
+
+<androidx.cardview.widget.CardView
+    android:id="@+id/cardText"
+
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="5dp"
+    app:cardBackgroundColor="@color/blue"
+
+    >
+    <RelativeLayout
+        android:paddingTop="@dimen/headerS"
+        android:paddingStart="@dimen/headerS"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tvMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="200dp"
+            android:text="Merhaba Dünya"
+            android:textSize="@dimen/headerXL" />
+        <TextView
+            android:layout_marginTop="@dimen/headerXL"
+            android:paddingStart="@dimen/headerXL"
+            android:layout_below="@id/tvMessage"
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10.10.2021"
+            android:textSize="@dimen/headerL"/>
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
+</RelativeLayout>

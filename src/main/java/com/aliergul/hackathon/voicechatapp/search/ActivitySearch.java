@@ -51,7 +51,6 @@ public class ActivitySearch extends AppCompatActivity {
     }
 
     private void setupItemListener() {
-        Toast.makeText(ActivitySearch.this,"setupItemListener: ",Toast.LENGTH_SHORT).show();
         binding.edtSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

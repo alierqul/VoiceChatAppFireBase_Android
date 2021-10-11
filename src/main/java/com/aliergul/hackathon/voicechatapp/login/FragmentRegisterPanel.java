@@ -42,7 +42,7 @@ public class FragmentRegisterPanel extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding=LoginFragmentSignupBinding.inflate(inflater, container,false);
         clickItemView();
-
+        binding.signUpBtn.setEnabled(true);
         return binding.getRoot();
     }
 
@@ -52,7 +52,9 @@ public class FragmentRegisterPanel extends Fragment {
         });
         binding.signUpBtn.setOnClickListener(v->{
             if(isEmailAndPaswordConrol()){
+                binding.signUpBtn.setEnabled(false);
                 registerFirebase();
+
             }
         });
     }
@@ -67,16 +69,16 @@ public class FragmentRegisterPanel extends Fragment {
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
                                 createUser.setUserUID(firebaseUser.getUid());
-                            updateUI(firebaseUser,createUser);
+                            updateUI(createUser);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getActivity(), getString(R.string.invalidDatabase),
                                     Toast.LENGTH_SHORT).show();
-                            updateUI(null, createUser);
+
                         }
                     }
-                    private void updateUI(FirebaseUser user, Users createUser) {
+                    private void updateUI( Users createUser) {
 
                         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
                         mDatabase.child("Users").child(createUser.getUserUID()).setValue(createUser).addOnCompleteListener(new OnCompleteListener<Void>() {

@@ -35,10 +35,6 @@
         android:textColorHint="@color/white"
         android:textSize="@dimen/headerL" />
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:background="@color/white_greyish" />
 
     <EditText
         android:id="@+id/edt_userEmailId"
@@ -56,10 +52,6 @@
         android:textColorHint="@color/white"
         android:textSize="@dimen/headerL" />
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:background="@color/white_greyish" />
 
 
     <EditText
@@ -78,10 +70,6 @@
         android:textColorHint="@color/white"
         android:textSize="@dimen/headerL" />
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:background="@color/white_greyish" />
 
     <EditText
         android:id="@+id/confirmPassword"
@@ -99,10 +87,7 @@
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         android:textSize="@dimen/headerL" />
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:background="@color/white_greyish" />
+
     <CheckBox
 
         android:padding="10dp"
@@ -113,6 +98,10 @@
         android:text="@string/terms_conditions"
         android:textColor="@color/white"
         android:textSize="@dimen/headerL" />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="@color/white_greyish" />
 
     <Button
         android:id="@+id/signUpBtn"

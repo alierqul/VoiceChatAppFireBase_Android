@@ -64,14 +64,10 @@
             android:inputType="textCapWords"
             android:padding="10dp"
             android:singleLine="true"
-            android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="@dimen/headerL" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1px"
-            android:background="@color/white_greyish" />
+
 
         <EditText
             android:enabled="false"
@@ -86,14 +82,9 @@
             android:inputType="textEmailAddress"
             android:padding="10dp"
             android:singleLine="true"
-            android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="@dimen/headerL" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1px"
-            android:background="@color/white_greyish" />
 
 
         <EditText
@@ -109,14 +100,9 @@
             android:inputType="textPassword"
             android:padding="10dp"
             android:singleLine="true"
-            android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="@dimen/headerL" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1px"
-            android:background="@color/white_greyish" />
         <EditText
             android:visibility="gone"
             android:id="@+id/confirmPassword"
@@ -131,7 +117,6 @@
             android:inputType="textPassword"
             android:padding="10dp"
             android:singleLine="true"
-            android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="@dimen/headerL" />
 

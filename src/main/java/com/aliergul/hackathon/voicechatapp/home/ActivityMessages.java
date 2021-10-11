@@ -44,14 +44,12 @@ public class ActivityMessages extends AppCompatActivity {
         setContentView(binding.getRoot());
         setupBottomNavigationView();
         FirebaseAuth mAuth=FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser()==null){
-            mAuth.signOut();
-        }
         mAuth.addAuthStateListener(listenerAccount(mAuth));
         adapter=new AdapterListProfile(new ArrayList<Users>(),ActivityMessages.this);
         binding.containerProfiles.setLayoutManager(new LinearLayoutManager(this));
         binding.containerProfiles.setAdapter(adapter);
-        getFirebaseUserdata(mAuth.getCurrentUser());
+        if(mAuth.getCurrentUser()!=null)
+            getFirebaseUserdata(mAuth.getCurrentUser());
     }
 
     private FirebaseAuth.AuthStateListener listenerAccount(FirebaseAuth mAuth) {

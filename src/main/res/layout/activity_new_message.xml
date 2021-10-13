@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-
     tools:context=".home.ActivityNewMessage"
     android:background="@color/gri">
     <androidx.appcompat.widget.Toolbar
@@ -43,8 +41,16 @@
         android:layout_below="@id/toolbarMessages"
         android:layout_marginBottom="@dimen/heightTextMessage"
         android:padding="@dimen/paddingL" />
+    <Chronometer
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/card"
+        android:id="@+id/record_timer"
+        android:textSize="64sp"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <androidx.cardview.widget.CardView
-
+        android:id="@+id/card"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="@dimen/heightTextMessage"
@@ -52,6 +58,7 @@
         card_view:cardCornerRadius="5dp"
         card_view:cardElevation="4dp"
         card_view:cardUseCompatPadding="true">
+
         <RelativeLayout
             android:padding="@dimen/paddingM"
             android:layout_width="match_parent"

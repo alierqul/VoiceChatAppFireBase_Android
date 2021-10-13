@@ -1,5 +1,6 @@
 package com.aliergul.hackathon.voicechatapp.search;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,8 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.aliergul.hackathon.voicechatapp.R;
 import com.aliergul.hackathon.voicechatapp.databinding.ActivityProfileBinding;
 import com.aliergul.hackathon.voicechatapp.databinding.ActivitySearchBinding;
+import com.aliergul.hackathon.voicechatapp.home.ActivityMessages;
+import com.aliergul.hackathon.voicechatapp.home.ActivityNewMessage;
 import com.aliergul.hackathon.voicechatapp.model.Users;
 import com.aliergul.hackathon.voicechatapp.util.BottomNavigationHelper;
+import com.aliergul.hackathon.voicechatapp.util.MyUtil;
+import com.firebase.ui.auth.data.model.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -36,17 +42,31 @@ public class ActivitySearch extends AppCompatActivity {
     private static final int ACTIVITY_NUM = 1;
     private AdapterListProfile adapter;
     private ActivitySearchBinding binding;
+    private List<Users> listUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding=ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setupBottomNavigationView();
-
+        listUser=new ArrayList<>();
 
          adapter=new AdapterListProfile(new ArrayList<>(),this);
         binding.containerSearch.setLayoutManager(new LinearLayoutManager(this));
         binding.containerSearch.setAdapter(adapter);
+        adapter.setOnItemClickListener(new AdapterListProfile.IClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+
+                if(listUser!=null){
+                    Users u=listUser.get(position);
+                    Intent i=new Intent(ActivitySearch.this, ActivityNewMessage.class);
+                    i.putExtra(MyUtil.USER_UID,u.getUserUID());
+                    i.putExtra(MyUtil.FULL_NAME,u.getUserName());
+                    startActivity(i);
+                }
+            }
+        });
         setupItemListener();
     }
 
@@ -66,24 +86,31 @@ public class ActivitySearch extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if(s != null && s.length() > 1){
                     getFindProfiles(s.toString().toLowerCase());
+                    listUser.clear();
                 }
             }
         });
     }
 
     private void  getFindProfiles(String queryText){
-
-        List<Users> list =new ArrayList<>();
         DatabaseReference mDatabase=FirebaseDatabase.getInstance().getReference();
         mDatabase.child("Users").orderByChild("metaData")
                 .startAt("%${"+queryText+"}%")
                 .endAt(queryText+"\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 for(DataSnapshot s:snapshot.getChildren()){
-                    list.add(s.getValue(Users.class));
+                    if(s.getValue()!=null){
+                        Users users=s.getValue(Users.class);
+                        if(!Users.getActiveUser().getUserUID().equals(users.getUserUID())){
+                            listUser.add(users);
+                        }
+                    }
+
+
                 }
-                adapter.updateList(list);
+                adapter.updateList(listUser);
             }
 
             @Override

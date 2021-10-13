@@ -14,6 +14,7 @@ import com.aliergul.hackathon.voicechatapp.databinding.ActivityProfileBinding;
 import com.aliergul.hackathon.voicechatapp.login.ActivityLoginAndRegister;
 import com.aliergul.hackathon.voicechatapp.model.Users;
 import com.aliergul.hackathon.voicechatapp.util.BottomNavigationHelper;
+import com.aliergul.hackathon.voicechatapp.util.MyUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,6 +29,7 @@ public class ActivityProfile extends AppCompatActivity {
     private static final String TAG = "ActivityProfile";
     private static final int ACTIVITY_NUM = 3;
     private ActivityProfileBinding binding;
+    private Users activeUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +37,14 @@ public class ActivityProfile extends AppCompatActivity {
         setContentView(binding.getRoot());
         setupBottomNavigationView();
         FirebaseAuth mAuth=FirebaseAuth.getInstance();
-        getFirebaseUserdata(mAuth.getCurrentUser());
+        if(Users.getActiveUser()!=null){
+            activeUser=Users.getActiveUser();
+            Log.w(TAG,"activeUser"+activeUser.toString());
+            setupProfile(activeUser);
+        }else{
+            getFirebaseUserdata(mAuth.getCurrentUser());
+        }
+
         clickItemView();
     }
 
@@ -89,11 +98,11 @@ public class ActivityProfile extends AppCompatActivity {
     }
     private void getFirebaseUserdata(FirebaseUser user) {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("Users").child(user.getUid()).addValueEventListener(new ValueEventListener() {
+        mDatabase.child(MyUtil.COLUMN_USERS).child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Users u=snapshot.getValue(Users.class);
-                setupProfile(u);
+               activeUser=snapshot.getValue(Users.class);
+                setupProfile(activeUser);
 
             }
 

@@ -1,24 +1,30 @@
 package com.aliergul.hackathon.voicechatapp.model;
 
-import androidx.annotation.ArrayRes;
 
 import com.google.firebase.database.IgnoreExtraProperties;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.io.Serializable;
 
 @IgnoreExtraProperties
-public class Users    {
+public class Users implements Serializable {
+    private static Users activeUser;
+
     private String userUID;
     private String userName;
     private String userEmail;
     private String userPhoto;
     private String metaData;
-
+    private String oneSignalDeviceID;
 
     public Users() {
 
+    }
+
+    public String getOneSignalDeviceID() {
+        return oneSignalDeviceID;
+    }
+
+    public void setOneSignalDeviceID(String oneSignalDeviceID) {
+        this.oneSignalDeviceID = oneSignalDeviceID;
     }
 
     public Users(String userUID, String userName, String userEmail, String userPhoto) {
@@ -78,5 +84,14 @@ public class Users    {
 
     public void setUserPhoto(String userPhoto) {
         this.userPhoto = userPhoto;
+    }
+
+    //Static Genel tanımlama
+
+    public static Users getActiveUser(){
+        return activeUser;
+    }
+    public static void setActiveUser(Users user){
+        activeUser=user;
     }
 }

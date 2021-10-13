@@ -34,8 +34,12 @@
     <string name="invalidName">Sizi tanımak isteriz.</string>
     <string name="invalidPassword2">Şifreler Eşleşmiyor.</string>
     <string name="invalidContract">Sözleşme kurallarını okuyup onaylamanız gerekiyor.</string>
-    <string name="invalidDatabase">Kayıt Sırasında bir hata oldu.\nLüfen Bize bildiriniz.</string>
+    <string name="invalidDatabase">Kayıt Sırasında bir hata oldu.\nLüfen Bilgilerinizi kontrol ediniz.</string>
     <string name="edit">Düzenle</string>
     <string name="exit">Oturumu Kapat</string>
     <string name="navNewMessages">Yeni Mesaj</string>
+    <!--    Notiications     -->
+    <string name="noti_channel_default">Primary Channel</string>
+    <string name="noti_channel_second">Secondary Channel</string>
+    <string name="nothingMessageInbox">Hiç Mesajınız Yok</string>
 </resources>

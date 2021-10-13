@@ -6,12 +6,15 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.media.MediaRecorder;
+import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Chronometer;
@@ -19,7 +22,9 @@ import android.widget.Toast;
 
 import com.aliergul.hackathon.voicechatapp.R;
 import com.aliergul.hackathon.voicechatapp.databinding.ActivityNewMessageBinding;
+import com.aliergul.hackathon.voicechatapp.model.MyNotification;
 import com.aliergul.hackathon.voicechatapp.model.Post;
+import com.aliergul.hackathon.voicechatapp.model.Users;
 import com.aliergul.hackathon.voicechatapp.util.MyUtil;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,14 +38,18 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.onesignal.OneSignal;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 public class ActivityNewMessage extends FragmentActivity {
     private String recordPermission = Manifest.permission.RECORD_AUDIO;
@@ -48,14 +57,13 @@ public class ActivityNewMessage extends FragmentActivity {
     private static final int FRAGMENT_ID = 100;
     private int PERMISSION_CODE = 21;
     private boolean isRecording = false;
-    private Chronometer timer;
     private MediaRecorder mediaRecorder;
-    private String recordFile;
-
+    private String recordFileName;
     private ActivityNewMessageBinding binding;
     private String friendUID="";
     private String friendName="";
-    private FirebaseAuth mAuth;
+
+    private FirebaseUser mUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,8 +71,9 @@ public class ActivityNewMessage extends FragmentActivity {
         setContentView(binding.getRoot());
         gelenVeriKontrol();
         clickItemView();
-
-        binding.containerMessages.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager manager=new LinearLayoutManager(this);
+        manager.setStackFromEnd(true);
+        binding.containerMessages.setLayoutManager(manager);
 
 
     }
@@ -91,17 +100,31 @@ public class ActivityNewMessage extends FragmentActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
-
-                    checkPermissionAndStart();
+                    if(checkPermissions()) {
+                        startRecording();
+                        playBeep();
+                        binding.recordTimer.setVisibility(View.VISIBLE);
+                        binding.btnSenVoice.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_start, null));
+                        binding.btnSenMessage.setEnabled(false);
+                        isRecording = true;
+                    }
                 }else if(motionEvent.getAction()==MotionEvent.ACTION_UP){
                     binding.btnSenVoice.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice, null));
                     stopRecording();
+                    binding.btnSenVoice.setEnabled(false);
+                    binding.recordTimer.setVisibility(View.GONE);
+                    binding.btnSenMessage.setEnabled(true);
                 }
                 return false;
             }
 
         });
 
+    }
+
+    private void playBeep() {
+        ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+        toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
     }
 
     private void checkPermissionAndStart() {
@@ -112,24 +135,30 @@ public class ActivityNewMessage extends FragmentActivity {
         }
     }
     private void stopRecording() {
-        timer.stop();
-        Toast.makeText(this,"Recording Stopped, File Saved ",Toast.LENGTH_SHORT).show();
+        binding.recordTimer.stop();
+
         mediaRecorder.stop();
         mediaRecorder.release();
         mediaRecorder = null;
+        String path =this.getExternalFilesDir("/").getAbsolutePath();
+        File directory = new File(path);
+        //File[] files = directory.listFiles();
+        //Uri uri=Uri.parse(this.getExternalFilesDir("/").getAbsolutePath()+"/"+ recordFileName);
+        File dir = new File(Environment.getExternalStorageDirectory(), "subDir");
+        File file = new File(path,recordFileName);
+        uploadVoice(mUser,recordFileName,Uri.fromFile(file));
     }
     private void startRecording() {
-        timer.setBase(SystemClock.elapsedRealtime());
-        timer.start();
+        binding.recordTimer.setBase(SystemClock.elapsedRealtime());
+        binding.recordTimer.start();
         String recordPath = this.getExternalFilesDir("/").getAbsolutePath();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss", Locale.getDefault());
         Date now = new Date();
-        recordFile = "Recording_" + formatter.format(now) + ".3gp";
-        Toast.makeText(this,"Recording, File Name",Toast.LENGTH_SHORT).show();
+        recordFileName = "Recording_" + formatter.format(now) + ".3gp";
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mediaRecorder.setOutputFile(recordPath + "/" + recordFile);
+        mediaRecorder.setOutputFile(recordPath + "/" + recordFileName);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
         try {
@@ -155,9 +184,9 @@ public class ActivityNewMessage extends FragmentActivity {
     private void getListMessages() {
         List<Post> listPost=new ArrayList<>();
         DatabaseReference mDatabase=FirebaseDatabase.getInstance().getReference();
-        FirebaseUser user= mAuth.getCurrentUser();
-        if(user!=null){
-            mDatabase.child(MyUtil.COLUMN_USERS).child(user.getUid()).child(MyUtil.COLUMN_MESSAGES).child(friendUID).addValueEventListener(new ValueEventListener() {
+
+        if(mUser!=null){
+            mDatabase.child(MyUtil.COLUMN_USERS).child(mUser.getUid()).child(MyUtil.COLUMN_MESSAGES).child(friendUID).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.getValue()!=null){
@@ -183,24 +212,25 @@ public class ActivityNewMessage extends FragmentActivity {
     }
 
     private void writeDatabese(Post p) {
-        FirebaseUser user= mAuth.getCurrentUser();
+
 
         binding.edtMessage.setText("");
 
         DatabaseReference mDatabase= FirebaseDatabase.getInstance().getReference();
-        String key=mDatabase.child(user.getUid()).child(MyUtil.COLUMN_MESSAGES).push().getKey();
+        String key=mDatabase.child(mUser.getUid()).child(MyUtil.COLUMN_MESSAGES).push().getKey();
         p.setMessageUID(key);
-        mDatabase.child(MyUtil.COLUMN_USERS).child(user.getUid()).child(MyUtil.COLUMN_MESSAGES).child(friendUID).child(key).setValue(p);
+        mDatabase.child(MyUtil.COLUMN_USERS).child(mUser.getUid()).child(MyUtil.COLUMN_MESSAGES).child(friendUID).child(key).setValue(p);
         p.setMySender(false);
         mDatabase.child(MyUtil.COLUMN_USERS).child(friendUID)
                 .child(MyUtil.COLUMN_MESSAGES)
-                .child(user.getUid()).child(key).setValue(p);
+                .child(mUser.getUid()).child(key).setValue(p);
+        //int ID, String title, String sendUID, String message, int type
+        //pushNotifications(new MyNotification());
+
     }
     public void uploadVoice (FirebaseUser user,String recordName,Uri recordUri) {
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-
         StorageReference uppURIstorageRef = storageReference.child("post").child(user.getUid()).child(recordName);
-
         uppURIstorageRef.putFile(recordUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -213,13 +243,12 @@ public class ActivityNewMessage extends FragmentActivity {
                         String downloadURL = uri.toString();
                         //System.out.println("download URL: " + downloadURL);
 
-                        FirebaseUser user = mAuth.getCurrentUser();
+                        Post postVoice=new Post(downloadURL,friendUID,mUser.getUid(),Post.POST_AUDIO);
+                        postVoice.setVoiceTime(binding.recordTimer.getText().toString());
 
-                        //String text,String giveUID, String awayUID,int typeMessage
-                        Post postVoice=new Post(downloadURL,friendUID,user.getUid(),Post.POST_AUDIO);
                         writeDatabese(postVoice);
-
-                        Toast.makeText(getApplicationContext(),"Uploaded!",Toast.LENGTH_LONG).show();
+                        binding.btnSenVoice.setEnabled(true);
+                        Toast.makeText(getApplicationContext(),"yüklendi!",Toast.LENGTH_LONG).show();
 
 
                     }
@@ -239,12 +268,16 @@ public class ActivityNewMessage extends FragmentActivity {
     }
 
     private void gelenVeriKontrol() {
+        mUser=FirebaseAuth.getInstance().getCurrentUser();
         if(getIntent().getExtras()!=null);{
-            mAuth =FirebaseAuth.getInstance();
             friendName=getIntent().getStringExtra(MyUtil.FULL_NAME);
             friendUID=getIntent().getStringExtra(MyUtil.USER_UID);
             binding.tvFriendName.setText(friendName);
         }
+
+    }
+    private void pushNotifications(MyNotification noti){
+        OneSignal.postNotification(noti.toJSON(), null);
 
     }
 }

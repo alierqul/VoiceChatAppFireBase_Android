@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/buleDark</item>
         <item name="colorPrimaryVariant">@color/blue</item>
         <item name="colorOnPrimary">@color/black</item>
+
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal</item>
         <item name="colorSecondaryVariant">@color/teal</item>
@@ -12,5 +13,13 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:textColor">@color/SecondaryTextColor</item>
+        <item name="android:editTextColor">@color/SecondaryTextColor</item>
+        <item name="android:textColorPrimary">@color/gri</item>
+        <item name="android:textColorSecondary">@color/SecondaryTextColor</item>
+        <item name="android:textColorTertiary">@color/gri</item>
+        <item name="android:textColorPrimaryInverse">@color/SecondaryTextColor</item>
+        <item name="android:textColorSecondaryInverse">@color/SecondaryTextColor</item>
+        <item name="android:textColorTertiaryInverse">@color/SecondaryTextColor</item>
     </style>
 </resources>

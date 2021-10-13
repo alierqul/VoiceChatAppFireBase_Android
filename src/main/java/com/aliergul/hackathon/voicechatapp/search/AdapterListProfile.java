@@ -22,7 +22,7 @@ import java.util.List;
 public class AdapterListProfile extends RecyclerView.Adapter<AdapterListProfile.LineProfileHolder> {
     private List<Users> liste;
     private Context mContext;
-
+    private IClickListener clickListener;
     public AdapterListProfile(List<Users> liste, Context mContext) {
         this.liste = liste;
         this.mContext = mContext;
@@ -70,12 +70,23 @@ public class AdapterListProfile extends RecyclerView.Adapter<AdapterListProfile.
         notifyDataSetChanged();
     }
 
-    public class LineProfileHolder extends RecyclerView.ViewHolder {
+    public class LineProfileHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private LineItemProfileBinding binding;
         public LineProfileHolder(@NonNull LineItemProfileBinding itemView) {
             super(itemView.getRoot());
+            itemView.getRoot().setOnClickListener(this);
             this.binding=itemView;
         }
 
+        @Override
+        public void onClick(View view) {
+            clickListener.onItemClick(getAdapterPosition(),view);
+        }
+    }
+    public void setOnItemClickListener(IClickListener clickListener){
+        this.clickListener=clickListener;
+    }
+    public interface IClickListener{
+        void onItemClick(int position,View v);
     }
 }

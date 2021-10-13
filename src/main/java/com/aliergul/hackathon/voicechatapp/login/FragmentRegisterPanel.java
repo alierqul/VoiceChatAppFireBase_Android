@@ -26,12 +26,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.onesignal.OSDeviceState;
+import com.onesignal.OneSignal;
 
 public class FragmentRegisterPanel extends Fragment {
     private static final String TAG ="FragmentRegisterPanel" ;
     private LoginFragmentSignupBinding binding;
     private IMoveFragment fragmentMove;
-
+    private String oneSignalDeviceID;
     public FragmentRegisterPanel(IMoveFragment fragmentMove) {
         super(R.layout.login_fragment_login);
         this.fragmentMove=fragmentMove;
@@ -42,8 +44,15 @@ public class FragmentRegisterPanel extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding=LoginFragmentSignupBinding.inflate(inflater, container,false);
         clickItemView();
+        setupOneSignal();
         binding.signUpBtn.setEnabled(true);
         return binding.getRoot();
+    }
+
+    private void setupOneSignal() {
+        OSDeviceState device = OneSignal.getDeviceState();
+
+        oneSignalDeviceID = device.getUserId();
     }
 
     private void clickItemView() {
@@ -69,10 +78,11 @@ public class FragmentRegisterPanel extends Fragment {
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
                                 createUser.setUserUID(firebaseUser.getUid());
+                                createUser.setOneSignalDeviceID(oneSignalDeviceID);
                             updateUI(createUser);
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            binding.signUpBtn.setEnabled(true);
                             Toast.makeText(getActivity(), getString(R.string.invalidDatabase),
                                     Toast.LENGTH_SHORT).show();
 
@@ -86,7 +96,6 @@ public class FragmentRegisterPanel extends Fragment {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
                                     Log.w(TAG,"onComplete="+createUser.toString());
-                                    Toast.makeText(getActivity(),"Kayıt Başarılı",Toast.LENGTH_SHORT).show();
                                     openHomeActivity();
                                 }
 

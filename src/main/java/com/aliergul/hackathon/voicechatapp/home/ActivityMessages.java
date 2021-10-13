@@ -7,14 +7,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.aliergul.hackathon.voicechatapp.R;
 import com.aliergul.hackathon.voicechatapp.databinding.ActivityHomeBinding;
 import com.aliergul.hackathon.voicechatapp.login.ActivityLoginAndRegister;
+import com.aliergul.hackathon.voicechatapp.model.MyNotification;
 import com.aliergul.hackathon.voicechatapp.model.Users;
 import com.aliergul.hackathon.voicechatapp.search.AdapterListProfile;
 import com.aliergul.hackathon.voicechatapp.util.BottomNavigationHelper;
+import com.aliergul.hackathon.voicechatapp.util.MyConstSecretID;
 import com.aliergul.hackathon.voicechatapp.util.MyUtil;
+import com.firebase.ui.auth.data.model.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,6 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.onesignal.OSDeviceState;
+import com.onesignal.OneSignal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +39,9 @@ public class ActivityMessages extends AppCompatActivity {
     private static final String TAG = "ActivityMessages";
     private static final int ACTIVITY_NUM = 0;
     private AdapterListProfile adapter;
-
+    private List<Users> listUser;
     private ActivityHomeBinding binding;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +49,46 @@ public class ActivityMessages extends AppCompatActivity {
         Log.w(TAG,"ActivityMessages onCreate");
         binding=ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        listUser=new ArrayList<>();
         setupBottomNavigationView();
-        FirebaseAuth mAuth=FirebaseAuth.getInstance();
-        mAuth.addAuthStateListener(listenerAccount(mAuth));
+        setupGeneralSettings();
+
         adapter=new AdapterListProfile(new ArrayList<Users>(),ActivityMessages.this);
         binding.containerProfiles.setLayoutManager(new LinearLayoutManager(this));
         binding.containerProfiles.setAdapter(adapter);
-        if(mAuth.getCurrentUser()!=null)
+        adapter.setOnItemClickListener(new AdapterListProfile.IClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                if(listUser!=null){
+                    Users user=listUser.get(position);
+                    Intent i=new Intent(ActivityMessages.this, ActivityNewMessage.class);
+                    i.putExtra(MyUtil.USER_UID,user.getUserUID());
+                    i.putExtra(MyUtil.FULL_NAME,user.getUserName());
+                    startActivity(i);
+                }
+            }
+        });
+        if(mAuth.getCurrentUser()!=null){
             getFirebaseUserdata(mAuth.getCurrentUser());
+            getActiveUserData(mAuth.getCurrentUser());
+        }
+
+    }
+
+    private void setupGeneralSettings() {
+        OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
+
+        // OneSignal Initialization
+        OneSignal.initWithContext(this);
+        OneSignal.setAppId(MyConstSecretID.ONESIGNAL_APP_ID);
+        // FireBase
+        mAuth=FirebaseAuth.getInstance();
+        mAuth.addAuthStateListener(listenerAccount(mAuth));
+       OSDeviceState device = OneSignal.getDeviceState();
+        String deviceID = device.getUserId();
+    //   new MyNotification(1,"message","","ali",3,3,false).sendNoti(deviceID);
+
+
     }
 
     private FirebaseAuth.AuthStateListener listenerAccount(FirebaseAuth mAuth) {
@@ -57,7 +96,7 @@ public class ActivityMessages extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user=mAuth.getCurrentUser();
-                if(mAuth==null ||user==null){
+                if(mAuth==null || user==null){
                     Log.d(TAG,"onAuthStateChanged");
 
                     openLoginPanel();
@@ -71,17 +110,22 @@ public class ActivityMessages extends AppCompatActivity {
     private void getFirebaseUserdata(FirebaseUser user) {
         List<String> listUserKeys=new ArrayList<>();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("Users").child(user.getUid()).child(MyUtil.COLUMN_MESSAGES)
+        mDatabase.child(MyUtil.COLUMN_USERS).child(user.getUid()).child(MyUtil.COLUMN_MESSAGES)
                 .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listUserKeys.clear();
                 for(DataSnapshot s:snapshot.getChildren()){
                     listUserKeys.add(s.getKey());
-                    Log.w(TAG,"Key: "+s.getKey());
+
+                }
+                if(listUserKeys.size()==0){
+                    binding.tvNothingMessage.setVisibility(View.VISIBLE);
+                }else{
+                    binding.tvNothingMessage.setVisibility(View.GONE);
                 }
                //Keyleri aldık şimdi isimleri alalım
-                List<Users> listUser=new ArrayList<>();
+
                 listUser.clear();
                 for (String key:listUserKeys ) {
                     mDatabase.child("Users").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -91,7 +135,9 @@ public class ActivityMessages extends AppCompatActivity {
                             Log.w(TAG,"Key: "+user.toString());
                             listUser.add(user);
                             adapter.setListe(listUser);
+
                         }
+
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
@@ -129,4 +175,22 @@ public class ActivityMessages extends AppCompatActivity {
         BottomNavigationHelper.enableNavigation(this, this,bottomNavigationViewEx);
 
     }
+
+    private void getActiveUserData(FirebaseUser user) {
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child(MyUtil.COLUMN_USERS).child(user.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Users u=snapshot.getValue(Users.class);
+                Users.setActiveUser(u);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 }

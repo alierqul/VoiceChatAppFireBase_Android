@@ -27,6 +27,7 @@
       </RelativeLayout>
    </androidx.appcompat.widget.Toolbar>
 
+
    <androidx.recyclerview.widget.RecyclerView
        android:id="@+id/containerProfiles"
        android:layout_width="match_parent"
@@ -34,6 +35,18 @@
        android:layout_below="@id/toolbarMessages"
        android:layout_marginBottom="@dimen/bottomNavigatorHeight"
        android:padding="@dimen/paddingL" />
+   <TextView
+
+       android:textStyle="bold"
+       android:visibility="invisible"
+       android:id="@+id/tv_nothingMessage"
+       android:textSize="@dimen/headerXL"
+       android:layout_marginTop="@dimen/headerXL"
+       android:layout_centerHorizontal="true"
+       android:layout_below="@id/toolbarMessages"
+       android:text="@string/nothingMessageInbox"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"/>
 
    <include layout="@layout/bottom_navigation_menu"/>
 

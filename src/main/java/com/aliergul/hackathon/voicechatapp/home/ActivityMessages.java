@@ -12,13 +12,12 @@ import android.view.View;
 import com.aliergul.hackathon.voicechatapp.R;
 import com.aliergul.hackathon.voicechatapp.databinding.ActivityHomeBinding;
 import com.aliergul.hackathon.voicechatapp.login.ActivityLoginAndRegister;
-import com.aliergul.hackathon.voicechatapp.model.MyNotification;
 import com.aliergul.hackathon.voicechatapp.model.Users;
 import com.aliergul.hackathon.voicechatapp.search.AdapterListProfile;
 import com.aliergul.hackathon.voicechatapp.util.BottomNavigationHelper;
+import com.aliergul.hackathon.voicechatapp.util.FirebaseHelper;
 import com.aliergul.hackathon.voicechatapp.util.MyConstSecretID;
 import com.aliergul.hackathon.voicechatapp.util.MyUtil;
-import com.firebase.ui.auth.data.model.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,33 +45,38 @@ public class ActivityMessages extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.w(TAG,"ActivityMessages onCreate");
         binding=ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         listUser=new ArrayList<>();
-        setupBottomNavigationView();
         setupGeneralSettings();
+        if(mAuth.getCurrentUser()!=null){
+            FirebaseHelper.getActiveUserData();
+            getFirebaseUserdata(mAuth.getCurrentUser());
+            Log.w(TAG,"ActivityMessages onCreate");
+        }
+        setupBottomNavigationView();
 
-        adapter=new AdapterListProfile(new ArrayList<Users>(),ActivityMessages.this);
+        setupRecyclerView();
+
+
+
+    }
+
+    private void setupRecyclerView() {
+        adapter=new AdapterListProfile(new ArrayList<Users>(),getString(R.string.emptyMessages),ActivityMessages.this);
         binding.containerProfiles.setLayoutManager(new LinearLayoutManager(this));
         binding.containerProfiles.setAdapter(adapter);
         adapter.setOnItemClickListener(new AdapterListProfile.IClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 if(listUser!=null){
-                    Users user=listUser.get(position);
+                    Users friendUser=listUser.get(position);
                     Intent i=new Intent(ActivityMessages.this, ActivityNewMessage.class);
-                    i.putExtra(MyUtil.USER_UID,user.getUserUID());
-                    i.putExtra(MyUtil.FULL_NAME,user.getUserName());
+                    FirebaseHelper.setFriendUser(friendUser);
                     startActivity(i);
                 }
             }
         });
-        if(mAuth.getCurrentUser()!=null){
-            getFirebaseUserdata(mAuth.getCurrentUser());
-            getActiveUserData(mAuth.getCurrentUser());
-        }
-
     }
 
     private void setupGeneralSettings() {
@@ -84,10 +88,6 @@ public class ActivityMessages extends AppCompatActivity {
         // FireBase
         mAuth=FirebaseAuth.getInstance();
         mAuth.addAuthStateListener(listenerAccount(mAuth));
-       OSDeviceState device = OneSignal.getDeviceState();
-        String deviceID = device.getUserId();
-    //   new MyNotification(1,"message","","ali",3,3,false).sendNoti(deviceID);
-
 
     }
 
@@ -101,6 +101,7 @@ public class ActivityMessages extends AppCompatActivity {
 
                     openLoginPanel();
                 }else{
+                    Log.d(TAG,"onAuthStateChanged TRUE");
 
                 }
             }
@@ -108,34 +109,22 @@ public class ActivityMessages extends AppCompatActivity {
     }
 
     private void getFirebaseUserdata(FirebaseUser user) {
-        List<String> listUserKeys=new ArrayList<>();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.child(MyUtil.COLUMN_USERS).child(user.getUid()).child(MyUtil.COLUMN_MESSAGES)
                 .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listUserKeys.clear();
-                for(DataSnapshot s:snapshot.getChildren()){
-                    listUserKeys.add(s.getKey());
-
-                }
-                if(listUserKeys.size()==0){
-                    binding.tvNothingMessage.setVisibility(View.VISIBLE);
-                }else{
-                    binding.tvNothingMessage.setVisibility(View.GONE);
-                }
-               //Keyleri aldık şimdi isimleri alalım
-
                 listUser.clear();
-                for (String key:listUserKeys ) {
-                    mDatabase.child("Users").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                for(DataSnapshot s:snapshot.getChildren()){
+
+                    mDatabase.child("Users").child(s.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Users user=snapshot.getValue(Users.class);
                             Log.w(TAG,"Key: "+user.toString());
                             listUser.add(user);
                             adapter.setListe(listUser);
-
+                            FirebaseHelper.setListFriendUsers(listUser);
                         }
 
 
@@ -146,12 +135,7 @@ public class ActivityMessages extends AppCompatActivity {
                     });
                 }
 
-
             }
-
-
-
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -176,21 +160,6 @@ public class ActivityMessages extends AppCompatActivity {
 
     }
 
-    private void getActiveUserData(FirebaseUser user) {
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child(MyUtil.COLUMN_USERS).child(user.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Users u=snapshot.getValue(Users.class);
-                Users.setActiveUser(u);
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 
 }

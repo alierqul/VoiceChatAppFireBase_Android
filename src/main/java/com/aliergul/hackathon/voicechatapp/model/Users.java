@@ -1,12 +1,16 @@
 package com.aliergul.hackathon.voicechatapp.model;
 
 
+import androidx.annotation.Nullable;
+
 import com.google.firebase.database.IgnoreExtraProperties;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @IgnoreExtraProperties
 public class Users implements Serializable {
-    private static Users activeUser;
+
 
     private String userUID;
     private String userName;
@@ -14,10 +18,12 @@ public class Users implements Serializable {
     private String userPhoto;
     private String metaData;
     private String oneSignalDeviceID;
+    private String onlineDate;
 
     public Users() {
 
     }
+
 
     public String getOneSignalDeviceID() {
         return oneSignalDeviceID;
@@ -37,7 +43,6 @@ public class Users implements Serializable {
     }
 
 
-
     @Override
     public String toString() {
         return "Users{" +
@@ -46,9 +51,10 @@ public class Users implements Serializable {
                 ", userEmail='" + userEmail + '\'' +
                 ", userPhoto='" + userPhoto + '\'' +
                 ", metaData='" + metaData + '\'' +
+                ", oneSignalDeviceID='" + oneSignalDeviceID + '\'' +
+                ", onlineDate='" + onlineDate + '\'' +
                 '}';
     }
-
 
     public String getMetaData() {
         return metaData;
@@ -86,12 +92,11 @@ public class Users implements Serializable {
         this.userPhoto = userPhoto;
     }
 
-    //Static Genel tanımlama
-
-    public static Users getActiveUser(){
-        return activeUser;
+    public String getOnlineDate() {
+        return onlineDate;
     }
-    public static void setActiveUser(Users user){
-        activeUser=user;
+
+    public void setOnlineDate(String onlineDate) {
+        this.onlineDate = onlineDate;
     }
 }

@@ -19,6 +19,7 @@ public class MyUtil {
     public static final String FULL_NAME="fullName";
     public static final String COLUMN_USERS="Users";
     public static final String COLUMN_MESSAGES="messages";
+    public static final String IS_ONLINE="online";
     public static final String COLUMN_VOICES="voices";
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
@@ -41,7 +42,8 @@ public class MyUtil {
 
     public static String getTimestampSecond(Post post){
         int minute=getTimestampDifference(post);
-        if(minute>0 && minute<= 1){
+        Log.w(TAG,"minute ="+minute);
+        if(minute>=0 && minute<= 1){
             return "Şimdi";
         }else if(minute>1 && minute< 60){
             return minute +" dk önce";
@@ -72,7 +74,7 @@ public class MyUtil {
         sdf.format(today);
         Date timestamp;
         timestamp = new Date(post.getDate());                                       //Dakika hesapladı.
-        difference = Math.round((today.getTime() - post.getDate()) / 1000 / 60 / 60);
+        difference = Math.round((today.getTime() - post.getDate()) / 1000 / 60 );
 
         return difference;
     }

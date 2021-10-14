@@ -38,8 +38,12 @@
     <string name="edit">Düzenle</string>
     <string name="exit">Oturumu Kapat</string>
     <string name="navNewMessages">Yeni Mesaj</string>
+    <string name="emptyUser">Arama Yapmak için kelime giriniz.</string>
+    <string name="searcNotFound">Arama Bulunamadı.</string>
+    <string name="emptyMessages">Hiç Mesajınız yok.</string>
     <!--    Notiications     -->
     <string name="noti_channel_default">Primary Channel</string>
     <string name="noti_channel_second">Secondary Channel</string>
     <string name="nothingMessageInbox">Hiç Mesajınız Yok</string>
+
 </resources>

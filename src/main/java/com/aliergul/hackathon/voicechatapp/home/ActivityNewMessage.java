@@ -11,23 +11,24 @@ import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.media.ToneGenerator;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Chronometer;
 import android.widget.Toast;
 
 import com.aliergul.hackathon.voicechatapp.R;
 import com.aliergul.hackathon.voicechatapp.databinding.ActivityNewMessageBinding;
-import com.aliergul.hackathon.voicechatapp.model.MyNotification;
 import com.aliergul.hackathon.voicechatapp.model.Post;
 import com.aliergul.hackathon.voicechatapp.model.Users;
+import com.aliergul.hackathon.voicechatapp.util.FirebaseHelper;
 import com.aliergul.hackathon.voicechatapp.util.MyUtil;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -50,6 +51,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ActivityNewMessage extends FragmentActivity {
     private String recordPermission = Manifest.permission.RECORD_AUDIO;
@@ -60,30 +63,33 @@ public class ActivityNewMessage extends FragmentActivity {
     private MediaRecorder mediaRecorder;
     private String recordFileName;
     private ActivityNewMessageBinding binding;
-    private String friendUID="";
-    private String friendName="";
+    private Users friendUser;
+    private Users actUser;
 
-    private FirebaseUser mUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding=ActivityNewMessageBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        gelenVeriKontrol();
-        clickItemView();
         LinearLayoutManager manager=new LinearLayoutManager(this);
         manager.setStackFromEnd(true);
         binding.containerMessages.setLayoutManager(manager);
+        actUser=FirebaseHelper.getActiveUser();
+        friendUser=FirebaseHelper.getFriendUser();
 
-
+        clickItemView();
     }
 
     private void clickItemView() {
+        FirebaseHelper.reWriteOneSignalKey();
         binding.btnBack.setOnClickListener(v->{
             onBackPressed();
         });
         binding.btnSenMessage.setOnClickListener(v->{
-            Post postText=new Post(binding.edtMessage.getText().toString(),friendUID, FirebaseAuth.getInstance().getCurrentUser().getUid(),Post.POST_TEXT);
+            Post postText=new Post
+                    ( binding.edtMessage.getText().toString()
+                    , FirebaseAuth.getInstance().getCurrentUser().getUid()
+                    , Post.POST_TEXT);
             writeDatabese(postText);
         });
         binding.btnSenVoice.setOnClickListener(v->{
@@ -108,7 +114,7 @@ public class ActivityNewMessage extends FragmentActivity {
                         binding.btnSenMessage.setEnabled(false);
                         isRecording = true;
                     }
-                }else if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                }else if(motionEvent.getAction()==MotionEvent.ACTION_UP && isRecording){
                     binding.btnSenVoice.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice, null));
                     stopRecording();
                     binding.btnSenVoice.setEnabled(false);
@@ -131,12 +137,12 @@ public class ActivityNewMessage extends FragmentActivity {
         if(checkPermissions()) {
             startRecording();
             binding.btnSenVoice.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_start, null));
-            isRecording = true;
+
         }
     }
     private void stopRecording() {
         binding.recordTimer.stop();
-
+        isRecording=false;
         mediaRecorder.stop();
         mediaRecorder.release();
         mediaRecorder = null;
@@ -146,7 +152,7 @@ public class ActivityNewMessage extends FragmentActivity {
         //Uri uri=Uri.parse(this.getExternalFilesDir("/").getAbsolutePath()+"/"+ recordFileName);
         File dir = new File(Environment.getExternalStorageDirectory(), "subDir");
         File file = new File(path,recordFileName);
-        uploadVoice(mUser,recordFileName,Uri.fromFile(file));
+        uploadVoice(recordFileName,Uri.fromFile(file));
     }
     private void startRecording() {
         binding.recordTimer.setBase(SystemClock.elapsedRealtime());
@@ -185,66 +191,147 @@ public class ActivityNewMessage extends FragmentActivity {
         List<Post> listPost=new ArrayList<>();
         DatabaseReference mDatabase=FirebaseDatabase.getInstance().getReference();
 
-        if(mUser!=null){
-            mDatabase.child(MyUtil.COLUMN_USERS).child(mUser.getUid()).child(MyUtil.COLUMN_MESSAGES).child(friendUID).addValueEventListener(new ValueEventListener() {
+        if(actUser!=null){
+            Log.w(TAG,"getListMessages actUser=TRUE");
+            mDatabase.child(MyUtil.COLUMN_USERS).child(actUser.getUserUID()).child(MyUtil.COLUMN_MESSAGES).child(friendUser.getUserUID()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.getValue()!=null){
                         listPost.clear();
                         for (DataSnapshot s:snapshot.getChildren()) {
-                            listPost.add(s.getValue(Post.class));
-                            binding.containerMessages.smoothScrollToPosition(listPost.size()-1);
+                          try {
+                              Post post=s.getValue(Post.class);
+                              listPost.add(post);
+                              binding.containerMessages.smoothScrollToPosition(listPost.size()-1);
+                          }catch (Exception e){
+                              Log.e(TAG,"onDataChange Exception ="+e.getLocalizedMessage());
+                              e.printStackTrace();
+                          }
+
                         }
                         AdapterListMessage adapter=new AdapterListMessage(listPost,ActivityNewMessage.this);
                         binding.containerMessages.setAdapter(adapter);
-
+                        mDatabase.child(MyUtil.COLUMN_USERS)
+                                .child(actUser.getUserUID())
+                                .child(MyUtil.COLUMN_MESSAGES)
+                                .child(friendUser.getUserUID())
+                                .child("count").setValue(0);
                     }
 
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    Log.w(TAG,"getListMessages onCancelled a");
                 }
             });
         }
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FirebaseHelper.setUserOnlineDate(MyUtil.IS_ONLINE);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        FirebaseHelper.setUserOnlineDate(System.currentTimeMillis()+"");
+    }
+
     private void writeDatabese(Post p) {
-
-
+        FirebaseHelper.getFriendUserUpgrade();
         binding.edtMessage.setText("");
 
         DatabaseReference mDatabase= FirebaseDatabase.getInstance().getReference();
-        String key=mDatabase.child(mUser.getUid()).child(MyUtil.COLUMN_MESSAGES).push().getKey();
+        String key=mDatabase.child(actUser.getUserUID()).child(MyUtil.COLUMN_MESSAGES).push().getKey();
         p.setMessageUID(key);
-        mDatabase.child(MyUtil.COLUMN_USERS).child(mUser.getUid()).child(MyUtil.COLUMN_MESSAGES).child(friendUID).child(key).setValue(p);
-        p.setMySender(false);
-        mDatabase.child(MyUtil.COLUMN_USERS).child(friendUID)
+        mDatabase.child(MyUtil.COLUMN_USERS)
+                .child(actUser.getUserUID())
                 .child(MyUtil.COLUMN_MESSAGES)
-                .child(mUser.getUid()).child(key).setValue(p);
-        //int ID, String title, String sendUID, String message, int type
-        //pushNotifications(new MyNotification());
+                .child(friendUser.getUserUID())
+                .child(key)
+                    .setValue(p);
+        p.setMySender(false);
+        mDatabase.child(MyUtil.COLUMN_USERS).child(friendUser.getUserUID())
+                .child(MyUtil.COLUMN_MESSAGES)
+                .child(actUser.getUserUID()).child(key).setValue(p);
+        sendNoti(friendUser.getOneSignalDeviceID(),friendUser.getUserName(),p.getText());
+       mDatabase.child(MyUtil.COLUMN_USERS)
+                .child(friendUser.getUserUID())
+                .child(MyUtil.COLUMN_MESSAGES)
+                .child(actUser.getUserUID())
+                .child("count").addListenerForSingleValueEvent(new ValueEventListener() {
+                   @Override
+                   public void onDataChange(@NonNull DataSnapshot snapshot) {
+                       try{
+                           int count=snapshot.getValue(Integer.class);
+                           mDatabase.child(MyUtil.COLUMN_USERS)
+                                   .child(friendUser.getUserUID())
+                                   .child(MyUtil.COLUMN_MESSAGES)
+                                   .child(actUser.getUserUID())
+                                   .child("count").setValue(++count);
+                       }catch (Exception e){
+                           mDatabase.child(MyUtil.COLUMN_USERS)
+                                   .child(friendUser.getUserUID())
+                                   .child(MyUtil.COLUMN_MESSAGES)
+                                   .child(actUser.getUserUID())
+                                   .child("count").setValue(1);
+                       }
+
+
+                   }
+                   @Override
+                   public void onCancelled(@NonNull DatabaseError error) {
+
+                   }
+               });
+
 
     }
-    public void uploadVoice (FirebaseUser user,String recordName,Uri recordUri) {
+    public void sendNoti(String deviceUID, String title,String message){
+        try {
+            //  "'headings':{'en':"+message +"},"+
+            if(!friendUser.getOnlineDate().equals(MyUtil.IS_ONLINE)){
+                OneSignal.postNotification(new JSONObject("{'contents': {'en':"+title+" }," +
+                                "'include_player_ids': ['" + deviceUID + "']}"),
+                        new OneSignal.PostNotificationResponseHandler() {
+                            @Override
+                            public void onSuccess(JSONObject response) {
+                                Log.i("OneSignalExample", "postNotification Success: " + response.toString());
+                            }
+
+                            @Override
+                            public void onFailure(JSONObject response) {
+                                Log.e("OneSignalExample", "postNotification Failure: " + response.toString());
+                            }
+                        });
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public void uploadVoice (String recordName, Uri recordUri) {
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-        StorageReference uppURIstorageRef = storageReference.child("post").child(user.getUid()).child(recordName);
+        StorageReference uppURIstorageRef = storageReference.child("post").child(actUser.getUserUID()).child(recordName);
         uppURIstorageRef.putFile(recordUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                StorageReference downUrlfindREF = FirebaseStorage.getInstance().getReference().child("post").child(user.getUid()).child(recordName);
+                StorageReference downUrlfindREF = FirebaseStorage.getInstance().getReference().child("post").child(actUser.getUserUID()).child(recordName);
 
                 downUrlfindREF.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
                         String downloadURL = uri.toString();
+                        String textMessage = binding.recordTimer.getText().toString();
                         //System.out.println("download URL: " + downloadURL);
 
-                        Post postVoice=new Post(downloadURL,friendUID,mUser.getUid(),Post.POST_AUDIO);
-                        postVoice.setVoiceTime(binding.recordTimer.getText().toString());
+                        Post postVoice=new Post(textMessage,actUser.getUserUID(),Post.POST_AUDIO);
+                        postVoice.getVoiceURL();
 
                         writeDatabese(postVoice);
                         binding.btnSenVoice.setEnabled(true);
@@ -267,17 +354,7 @@ public class ActivityNewMessage extends FragmentActivity {
 
     }
 
-    private void gelenVeriKontrol() {
-        mUser=FirebaseAuth.getInstance().getCurrentUser();
-        if(getIntent().getExtras()!=null);{
-            friendName=getIntent().getStringExtra(MyUtil.FULL_NAME);
-            friendUID=getIntent().getStringExtra(MyUtil.USER_UID);
-            binding.tvFriendName.setText(friendName);
-        }
 
-    }
-    private void pushNotifications(MyNotification noti){
-        OneSignal.postNotification(noti.toJSON(), null);
 
-    }
+
 }

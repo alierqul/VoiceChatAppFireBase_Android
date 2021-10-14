@@ -7,24 +7,20 @@ public class Post {
     public static final int POST_TEXT =0;
     public static final int POST_AUDIO=1;
     private long date;
-    private String giveUID;// alan
     private String sendUID;// veren=gönderen
     private String messageUID;
     protected boolean appeared; //Göründü
     private String text="";
     private int typeMessage=0;
-    private String voiceTime;
-
-
-
+    private String voiceURL;
 
     public Post() {
         this.date=System.currentTimeMillis();
         this.appeared=false;
     }
 
-    public Post(String text,String giveUID, String awayUID,int typeMessage) {
-        this.giveUID = giveUID;
+    public Post(String text, String awayUID,int typeMessage) {
+
         this.sendUID = awayUID;
         this.text=text;
         this.date=System.currentTimeMillis();
@@ -53,14 +49,6 @@ public class Post {
         return date;
     }
 
-    public String getGiveUID() {
-        return giveUID;
-    }
-
-    public void setGiveUID(String giveUID) {
-        this.giveUID = giveUID;
-    }
-
     public String getSendUID() {
         return sendUID;
     }
@@ -81,14 +69,13 @@ public class Post {
         this.appeared = appeared;
     }
 
-    public String getVoiceTime() {
-        return voiceTime;
+    public String getVoiceURL() {
+        return voiceURL;
     }
 
-    public void setVoiceTime(String voiceTime) {
-        this.voiceTime = voiceTime;
+    public void setVoiceURL(String voiceURL) {
+        this.voiceURL = voiceURL;
     }
-
 
     public void setMySender(boolean mySender) {
         mySender = mySender;

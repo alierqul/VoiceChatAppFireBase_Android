@@ -10,4 +10,5 @@
     <dimen name="heightTextMessage">100dp</dimen>
     <dimen name="headerM">12sp</dimen>
     <dimen name="headerS">5sp</dimen>
+    <dimen name="playBtnHeight">75dp</dimen>
 </resources>

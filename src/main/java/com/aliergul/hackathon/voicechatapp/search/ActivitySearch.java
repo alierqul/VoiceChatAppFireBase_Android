@@ -20,6 +20,7 @@ import com.aliergul.hackathon.voicechatapp.home.ActivityMessages;
 import com.aliergul.hackathon.voicechatapp.home.ActivityNewMessage;
 import com.aliergul.hackathon.voicechatapp.model.Users;
 import com.aliergul.hackathon.voicechatapp.util.BottomNavigationHelper;
+import com.aliergul.hackathon.voicechatapp.util.FirebaseHelper;
 import com.aliergul.hackathon.voicechatapp.util.MyUtil;
 import com.firebase.ui.auth.data.model.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -43,6 +44,7 @@ public class ActivitySearch extends AppCompatActivity {
     private AdapterListProfile adapter;
     private ActivitySearchBinding binding;
     private List<Users> listUser;
+    private Users actUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +52,19 @@ public class ActivitySearch extends AppCompatActivity {
         setContentView(binding.getRoot());
         setupBottomNavigationView();
         listUser=new ArrayList<>();
+        actUser=FirebaseHelper.getActiveUser();
+        if(actUser==null){
+            FirebaseHelper.getActiveUserData();
+            actUser=FirebaseHelper.getActiveUser();
+        }
 
-         adapter=new AdapterListProfile(new ArrayList<>(),this);
+        setupRecyclerView();
+
+        setupItemListener();
+    }
+
+    private void setupRecyclerView() {
+        adapter=new AdapterListProfile(new ArrayList<>(),getString(R.string.emptyUser),this);
         binding.containerSearch.setLayoutManager(new LinearLayoutManager(this));
         binding.containerSearch.setAdapter(adapter);
         adapter.setOnItemClickListener(new AdapterListProfile.IClickListener() {
@@ -59,15 +72,13 @@ public class ActivitySearch extends AppCompatActivity {
             public void onItemClick(int position, View v) {
 
                 if(listUser!=null){
-                    Users u=listUser.get(position);
+                    Users friendUser=listUser.get(position);
                     Intent i=new Intent(ActivitySearch.this, ActivityNewMessage.class);
-                    i.putExtra(MyUtil.USER_UID,u.getUserUID());
-                    i.putExtra(MyUtil.FULL_NAME,u.getUserName());
+                    FirebaseHelper.setFriendUser(friendUser);
                     startActivity(i);
                 }
             }
         });
-        setupItemListener();
     }
 
     private void setupItemListener() {
@@ -84,10 +95,15 @@ public class ActivitySearch extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+
                 if(s != null && s.length() > 1){
                     getFindProfiles(s.toString().toLowerCase());
-                    listUser.clear();
+
+
+                }else{
+                    adapter.setEmptyMesssage(getString(R.string.emptyUser));
                 }
+
             }
         });
     }
@@ -99,11 +115,12 @@ public class ActivitySearch extends AppCompatActivity {
                 .endAt(queryText+"\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
+                adapter.setEmptyMesssage(getString(R.string.searcNotFound));
+                listUser.clear();
                 for(DataSnapshot s:snapshot.getChildren()){
                     if(s.getValue()!=null){
                         Users users=s.getValue(Users.class);
-                        if(!Users.getActiveUser().getUserUID().equals(users.getUserUID())){
+                        if(actUser!=null && users!=null && !actUser.getUserUID().equals(users.getUserUID())){
                             listUser.add(users);
                         }
                     }

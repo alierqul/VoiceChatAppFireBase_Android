@@ -1,53 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_height="wrap_content"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-   >
-    <androidx.cardview.widget.CardView
+    android:layout_height="wrap_content"
+    android:minWidth="200dp"
+    android:layout_marginTop="@dimen/paddingL">
+    <LinearLayout
+        android:paddingStart="@dimen/paddingXL"
+        android:paddingEnd="@dimen/paddingXL"
         android:id="@+id/cardVoice"
+        android:layout_gravity="end"
+        android:orientation="horizontal"
+        android:background="@drawable/shape_bg_incoming_bubble"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        card_view:cardBackgroundColor="@color/gri"
-        card_view:cardCornerRadius="5dp"
-        card_view:cardElevation="4dp"
-        card_view:cardUseCompatPadding="true"
-        android:padding="@dimen/headerL">
+        android:layout_height="wrap_content">
+    <ImageView
+        android:layout_centerVertical="true"
+        android:id="@+id/list_image_view"
+        android:layout_width="75dp"
+        android:layout_height="@dimen/playBtnHeight"
+        android:src="@drawable/ic_play_circle" />
 
-        <RelativeLayout
+
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_centerVertical="true"
-                android:id="@+id/list_image_view"
+            android:layout_height="@dimen/playBtnHeight">
+            <androidx.cardview.widget.CardView
+                app:cardBackgroundColor="@android:color/transparent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_play_circle" />
+                card_view:cardCornerRadius="5dp"
+                card_view:cardUseCompatPadding="true">
 
             <TextView
-                android:layout_toRightOf="@id/list_image_view"
-                android:layout_below="@id/list_title"
-                android:id="@+id/tv_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="date"
-                android:textColor="@color/buleDark"
-                android:textSize="@dimen/headerL"
-                />
-
-            <TextView
-
-                android:layout_toRightOf="@id/list_image_view"
                 android:id="@+id/list_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/headerL"
-                android:layout_marginStart="8dp"
-                android:text="message" />
-        </RelativeLayout>
+                android:text="merhaba dünya" />
 
-    </androidx.cardview.widget.CardView>
+            </androidx.cardview.widget.CardView>
+            <TextView
+                android:layout_below="@id/list_title"
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5 dk önce"
+                android:textColor="@color/buleDark"
+                android:textSize="@dimen/headerL"
+                />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 </RelativeLayout>

@@ -26,6 +26,7 @@ public class MyUtil {
     private static Locale locale=new Locale("tr","Turkey");
 
     /**
+     * ye
      * Email Adresi Kontrol etme.
      * @param emailStr
      * @return

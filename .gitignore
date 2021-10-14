@@ -1,1 +1,75 @@
+# Person File
+google-services.json
+MyConstSecretID.java
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab
+*.iml
+.gradle
+# Files for the ART/Dalvik VM
+*.dex
+# Java class files
+*.class
+# Generated files
+bin/
+gen/
+out/
+# Gradle files
+.gradle/
+build/
 /build
+/captures
+# Local configuration file (sdk path, etc)
+/local.properties
+# Log Files
+*.log
+
+# Android Studio Navigation editor temp files
+.navigation/
+
+# Android Studio captures folder
+captures/
+# IntelliJ
+*.iml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/dictionaries
+.idea/jarRepositories.xml
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+
+.externalNativeBuild
+.cxx
+local.properties
+
+# Freeline
+freeline.py
+freeline/
+freeline_project_description.json
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/readme.md
+
+# Version control
+vcs.xml
+
+# lint
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/
+# lint/reports/
+
+# Android Profiling
+*.hprof

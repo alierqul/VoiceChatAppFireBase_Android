@@ -43,25 +43,25 @@ public class BottomNavigationHelper {
                 switch (item.getItemId()){
 
                     case R.id.nav_profile: {
-                        Intent intent1 = new Intent(context, ActivityProfile.class);//ACTIVITY_NUM = 0
+                        Intent intent1 = new Intent(context, ActivityProfile.class);
                         context.startActivity(intent1);
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
                     }
                     case R.id.nav_message: {
-                        Intent intent1 = new Intent(context, ActivityMessages.class);//ACTIVITY_NUM = 0
+                        Intent intent1 = new Intent(context, ActivityMessages.class);
                         context.startActivity(intent1);
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
                     }
                     case R.id.nav_notifications: {
-                        Intent intent1 = new Intent(context, ActivityNotifications.class);//ACTIVITY_NUM = 0
+                        Intent intent1 = new Intent(context, ActivityNotifications.class);
                         context.startActivity(intent1);
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
                     }
                     case R.id.nav_search: {
-                        Intent intent1 = new Intent(context, ActivitySearch.class);//ACTIVITY_NUM = 0
+                        Intent intent1 = new Intent(context, ActivitySearch.class);
                         context.startActivity(intent1);
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;

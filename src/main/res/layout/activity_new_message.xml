@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".home.ActivityNewMessage"
+    tools:context=".newmessage.ActivityNewMessage"
     android:background="@color/gri">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarMessages"
@@ -41,6 +41,13 @@
         android:layout_below="@id/toolbarMessages"
         android:layout_marginBottom="@dimen/heightTextMessage"
         android:padding="@dimen/paddingL" />
+
+    <FrameLayout
+
+        android:id="@+id/containerPlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <Chronometer
         android:layout_centerHorizontal="true"
         android:layout_above="@id/card"
@@ -51,47 +58,51 @@
         android:layout_height="wrap_content" />
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
+        android:layout_toLeftOf="@id/btn_send"
+        card_view:cardBackgroundColor="@color/gri"
         android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
+        android:layout_marginEnd="-15dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="10dp"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/heightTextMessage"
-        card_view:cardBackgroundColor="@color/blue"
-        card_view:cardCornerRadius="5dp"
-        card_view:cardElevation="4dp"
-        card_view:cardUseCompatPadding="true">
+        card_view:cardCornerRadius="20dp"
+        card_view:cardElevation="4dp">
 
         <RelativeLayout
-            android:padding="@dimen/paddingM"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
             <EditText
+                android:textAlignment="textStart"
                 android:id="@+id/edtMessage"
                 android:textColor="@color/PrimaryTextColor"
-                android:layout_marginEnd="@dimen/paddingM"
                 android:layout_centerVertical="true"
                 android:hint="Mesajınız"
-                android:layout_toLeftOf="@id/btn_senVoice"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-            <ImageView
-                android:id="@+id/btn_senVoice"
-                android:layout_marginEnd="@dimen/paddingL"
-                android:layout_centerVertical="true"
-                android:background="@drawable/ic_voice"
-                android:layout_toLeftOf="@id/btn_senMessage"
-                android:layout_width="50dp"
-                android:layout_height="50dp"/>
-            <ImageView
+                android:layout_height="match_parent"/>
 
-                android:id="@+id/btn_senMessage"
-                android:layout_marginEnd="@dimen/paddingL"
-                android:layout_centerVertical="true"
-                android:background="@drawable/ic_send"
-                android:layout_alignParentEnd="true"
-                android:layout_width="50dp"
-                android:layout_height="50dp"/>
+
 
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
+    <LinearLayout
+        android:clickable="true"
+        android:padding="20dp"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/btn_send"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_width="100dp"
+        android:layout_height="100dp">
+
+        <ImageView
+            android:id="@+id/imgSendbtn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_voice"
+            android:scaleType="fitCenter" />
+    </LinearLayout>
 
 </RelativeLayout>

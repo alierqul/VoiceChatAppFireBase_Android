@@ -5,37 +5,27 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.aliergul.hackathon.voicechatapp.R;
-import com.aliergul.hackathon.voicechatapp.databinding.ActivityProfileBinding;
 import com.aliergul.hackathon.voicechatapp.databinding.ActivitySearchBinding;
-import com.aliergul.hackathon.voicechatapp.home.ActivityMessages;
-import com.aliergul.hackathon.voicechatapp.home.ActivityNewMessage;
+import com.aliergul.hackathon.voicechatapp.newmessage.ActivityNewMessage;
 import com.aliergul.hackathon.voicechatapp.model.Users;
 import com.aliergul.hackathon.voicechatapp.util.BottomNavigationHelper;
 import com.aliergul.hackathon.voicechatapp.util.FirebaseHelper;
-import com.aliergul.hackathon.voicechatapp.util.MyUtil;
-import com.firebase.ui.auth.data.model.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class ActivitySearch extends AppCompatActivity {
 

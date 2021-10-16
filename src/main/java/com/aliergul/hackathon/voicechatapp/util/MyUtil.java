@@ -1,5 +1,7 @@
 package com.aliergul.hackathon.voicechatapp.util;
 
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.util.Log;
 
 import com.aliergul.hackathon.voicechatapp.model.Post;
@@ -26,7 +28,7 @@ public class MyUtil {
     private static Locale locale=new Locale("tr","Turkey");
 
     /**
-     * ye
+     * 
      * Email Adresi Kontrol etme.
      * @param emailStr
      * @return
@@ -40,7 +42,10 @@ public class MyUtil {
         sdf.setTimeZone(TimeZone.getTimeZone("Turkey"));
        return sdf.format(l);
     }
-
+    public static void playBeep() {
+        ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+        toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
+    }
     public static String getTimestampSecond(Post post){
         int minute=getTimestampDifference(post);
         Log.w(TAG,"minute ="+minute);

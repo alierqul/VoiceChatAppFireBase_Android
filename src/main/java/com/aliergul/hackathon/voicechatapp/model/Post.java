@@ -28,6 +28,56 @@ public class Post {
         this.appeared=false;
     }
 
+    public Post( String sendUID,  String text, int typeMessage, String voiceURL) {
+        this.date=System.currentTimeMillis();
+        this.sendUID = sendUID;
+        this.appeared=false;
+        this.text = text;
+        this.typeMessage = typeMessage;
+        this.voiceURL = voiceURL;
+    }
+
+
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "date=" + date +
+                ", sendUID='" + sendUID + '\'' +
+                ", messageUID='" + messageUID + '\'' +
+                ", appeared=" + appeared +
+                ", text='" + text + '\'' +
+                ", typeMessage=" + typeMessage +
+                ", voiceURL='" + voiceURL + '\'' +
+                '}';
+    }
+
+    public long getDate() {
+        return date;
+    }
+    public String getSendUID() {
+        return sendUID;
+    }
+
+    public void setSendUID(String sendUID) {
+        this.sendUID = sendUID;
+    }
+
+    public String getMessageUID() {
+        return messageUID;
+    }
+
+    public void setMessageUID(String messageUID) {
+        this.messageUID = messageUID;
+    }
+
+    public boolean isAppeared() {
+        return appeared;
+    }
+
+    public void setAppeared(boolean appeared) {
+        this.appeared = appeared;
+    }
 
     public String getText() {
         return text;
@@ -45,43 +95,11 @@ public class Post {
         this.typeMessage = typeMessage;
     }
 
-    public long getDate() {
-        return date;
-    }
-
-    public String getSendUID() {
-        return sendUID;
-    }
-
-    public void setSendUID(String sendUID) {
-        this.sendUID = sendUID;
-    }
-
-    public String getMessageUID() {
-        return messageUID;
-    }
-
-    public boolean isAppeared() {
-        return appeared;
-    }
-
-    public void setAppeared(boolean appeared) {
-        this.appeared = appeared;
-    }
-
     public String getVoiceURL() {
         return voiceURL;
     }
 
     public void setVoiceURL(String voiceURL) {
         this.voiceURL = voiceURL;
-    }
-
-    public void setMySender(boolean mySender) {
-        mySender = mySender;
-    }
-
-    public void setMessageUID(String messageUID) {
-        this.messageUID = messageUID;
     }
 }

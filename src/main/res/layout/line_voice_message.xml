@@ -39,17 +39,22 @@
                 android:id="@+id/list_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/headerL"
+                android:textSize="@dimen/headerM"
                 android:text="merhaba dünya" />
 
             </androidx.cardview.widget.CardView>
+            <SeekBar
+                android:id="@+id/player_seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <TextView
+                android:layout_gravity="end"
                 android:layout_below="@id/list_title"
                 android:id="@+id/tv_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="5 dk önce"
-                android:textColor="@color/buleDark"
                 android:textSize="@dimen/headerL"
                 />
 
@@ -57,4 +62,5 @@
 
 
     </LinearLayout>
+
 </RelativeLayout>

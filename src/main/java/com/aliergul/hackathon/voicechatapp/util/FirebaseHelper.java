@@ -109,11 +109,11 @@ static {
     public static void reWriteOneSignalKey(){
         OSDeviceState device = OneSignal.getDeviceState();
         String deviceID = device.getUserId();
-        database.getReference().child(activeUser.getUserUID()).child("oneSignalDeviceID").setValue(deviceID);
+        database.getReference().child(MyUtil.COLUMN_USERS).child(activeUser.getUserUID()).child("oneSignalDeviceID").setValue(deviceID);
     }
 
     public static void setUserOnlineDate(String log) {
-        database.getReference().child(activeUser.getUserUID()).child("onlineDate").setValue(log);
+        database.getReference().child(MyUtil.COLUMN_USERS).child(activeUser.getUserUID()).child("onlineDate").setValue(log);
     }
 
 

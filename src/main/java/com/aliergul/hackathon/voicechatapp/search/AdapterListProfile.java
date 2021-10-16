@@ -2,7 +2,6 @@ package com.aliergul.hackathon.voicechatapp.search;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +9,19 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aliergul.hackathon.voicechatapp.R;
 import com.aliergul.hackathon.voicechatapp.databinding.LineHeaderTextBinding;
 import com.aliergul.hackathon.voicechatapp.databinding.LineItemProfileBinding;
-import com.aliergul.hackathon.voicechatapp.home.ActivityNewMessage;
+import com.aliergul.hackathon.voicechatapp.newmessage.ActivityNewMessage;
 import com.aliergul.hackathon.voicechatapp.model.Users;
+import com.aliergul.hackathon.voicechatapp.util.FirebaseHelper;
 import com.aliergul.hackathon.voicechatapp.util.MyUtil;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AdapterListProfile extends RecyclerView.Adapter {
@@ -35,6 +39,7 @@ public class AdapterListProfile extends RecyclerView.Adapter {
     public void setListe(List<Users> list){
         this.liste=list;
         notifyDataSetChanged();
+
     }
     @NonNull
     @Override
@@ -55,6 +60,11 @@ public class AdapterListProfile extends RecyclerView.Adapter {
         if(getItemViewType(position)==SHOW_LINE_USER_PROFILE){
             Users user=liste.get(position);
             LineProfileHolder h=(LineProfileHolder)holder;
+            h.binding.count.setVisibility(View.GONE);
+            if(emptyMesssage.equals(mContext.getString(R.string.emptyMessages))){
+                inboxCount(h,user);
+            }
+
             h.binding.tvEmail.setText(user.getUserEmail());
             h.binding.tvFullName.setText(user.getUserName());
             if(user.getUserPhoto().length()>10){
@@ -75,6 +85,39 @@ public class AdapterListProfile extends RecyclerView.Adapter {
             header.binding.tvHeader.setText(emptyMesssage);
         }
 
+    }
+
+    private void inboxCount(LineProfileHolder h,Users user) {
+        //Okunmamış mesaj Yazımı...
+
+        Users actUSer= FirebaseHelper.getActiveUser();
+        FirebaseDatabase.getInstance().getReference().child(MyUtil.COLUMN_USERS)
+                .child(actUSer.getUserUID())
+                .child(MyUtil.COLUMN_MESSAGES)
+                .child(user.getUserUID())
+                .child("count").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try{
+                    int count=snapshot.getValue(Integer.class);
+                    if(count>0){
+                        h.binding.count.setText(String.valueOf(count));
+                        h.binding.count.setVisibility(View.VISIBLE);
+
+                    }else{
+                        h.binding.count.setVisibility(View.GONE);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override

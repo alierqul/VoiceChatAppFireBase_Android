@@ -6,6 +6,7 @@
     <dimen name="bottomNavigatorHeight">50dp</dimen>
     <dimen name="paddingL">20dp</dimen>
     <dimen name="paddingXL">25dp</dimen>
+    <dimen name="paddingXXL">30dp</dimen>
     <dimen name="paddingM">10dp</dimen>
     <dimen name="heightTextMessage">100dp</dimen>
     <dimen name="headerM">12sp</dimen>

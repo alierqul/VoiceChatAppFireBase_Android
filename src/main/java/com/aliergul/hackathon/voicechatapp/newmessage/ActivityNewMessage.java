@@ -1,4 +1,4 @@
-package com.aliergul.hackathon.voicechatapp.home;
+package com.aliergul.hackathon.voicechatapp.newmessage;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -15,9 +15,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.aliergul.hackathon.voicechatapp.R;
@@ -35,6 +40,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Logger;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -58,13 +64,17 @@ public class ActivityNewMessage extends FragmentActivity {
     private String recordPermission = Manifest.permission.RECORD_AUDIO;
     private static final String TAG = "ActivityNewMessage";
     private static final int FRAGMENT_ID = 100;
-    private int PERMISSION_CODE = 21;
+    private int PERMISSION_CODE = 200;
     private boolean isRecording = false;
     private MediaRecorder mediaRecorder;
     private String recordFileName;
     private ActivityNewMessageBinding binding;
     private Users friendUser;
     private Users actUser;
+    private EChoseSend choseSend= EChoseSend.AUDIO;
+    public enum EChoseSend{
+        TEXT,AUDIO;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,42 +95,73 @@ public class ActivityNewMessage extends FragmentActivity {
         binding.btnBack.setOnClickListener(v->{
             onBackPressed();
         });
-        binding.btnSenMessage.setOnClickListener(v->{
-            Post postText=new Post
-                    ( binding.edtMessage.getText().toString()
-                    , FirebaseAuth.getInstance().getCurrentUser().getUid()
-                    , Post.POST_TEXT);
-            writeDatabese(postText);
-        });
-        binding.btnSenVoice.setOnClickListener(v->{
-            voiceOpenDialog();
-        });
-        getListMessages();
-    }
 
+        voiceOpenDialog();
+        getListMessages();
+        btnSeendVoiceandTextChosee();
+    }
+    private void btnSeendVoiceandTextChosee() {
+        binding.edtMessage.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable key) {
+                if(key!=null && key.length()>0){
+                    binding.imgSendbtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_send, null));
+                    choseSend=EChoseSend.TEXT;
+                }else{
+                    binding.imgSendbtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice, null));
+                    choseSend=EChoseSend.AUDIO;
+                }
+            }
+        });
+    }
     /**
      * ses Kayıt fragment aç
      */
     private void voiceOpenDialog() {
-        binding.btnSenVoice.setOnTouchListener(new View.OnTouchListener() {
+        binding.btnSend.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
-                    if(checkPermissions()) {
-                        startRecording();
-                        playBeep();
-                        binding.recordTimer.setVisibility(View.VISIBLE);
-                        binding.btnSenVoice.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_start, null));
-                        binding.btnSenMessage.setEnabled(false);
-                        isRecording = true;
+                long time=SystemClock.elapsedRealtime()-binding.recordTimer.getBase();
+                if(choseSend== EChoseSend.AUDIO){
+                    //ADUDIO SEÇİM
+                    if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                        if(checkPermissions()) {
+                            MyUtil.playBeep();
+                            binding.recordTimer.setVisibility(View.VISIBLE);
+                            binding.imgSendbtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle, null));
+
+                            startRecording();
+                        }
+                    }else if(motionEvent.getAction()==MotionEvent.ACTION_UP && isRecording){
+
+                        stopRecording();
+
+                        binding.imgSendbtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice, null));
+                        binding.recordTimer.setVisibility(View.GONE);
+
                     }
-                }else if(motionEvent.getAction()==MotionEvent.ACTION_UP && isRecording){
-                    binding.btnSenVoice.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice, null));
-                    stopRecording();
-                    binding.btnSenVoice.setEnabled(false);
-                    binding.recordTimer.setVisibility(View.GONE);
-                    binding.btnSenMessage.setEnabled(true);
+                }else{
+                    //text mesaj
+                    if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                        Post postText=new Post
+                                ( binding.edtMessage.getText().toString()
+                                        , FirebaseAuth.getInstance().getCurrentUser().getUid()
+                                        , Post.POST_TEXT);
+                        writeDatabese(postText);
+                    }
+
                 }
+
                 return false;
             }
 
@@ -128,52 +169,64 @@ public class ActivityNewMessage extends FragmentActivity {
 
     }
 
-    private void playBeep() {
-        ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
-        toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
-    }
 
-    private void checkPermissionAndStart() {
-        if(checkPermissions()) {
-            startRecording();
-            binding.btnSenVoice.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_start, null));
-
-        }
-    }
     private void stopRecording() {
-        binding.recordTimer.stop();
-        isRecording=false;
-        mediaRecorder.stop();
-        mediaRecorder.release();
-        mediaRecorder = null;
-        String path =this.getExternalFilesDir("/").getAbsolutePath();
-        File directory = new File(path);
-        //File[] files = directory.listFiles();
-        //Uri uri=Uri.parse(this.getExternalFilesDir("/").getAbsolutePath()+"/"+ recordFileName);
-        File dir = new File(Environment.getExternalStorageDirectory(), "subDir");
-        File file = new File(path,recordFileName);
-        uploadVoice(recordFileName,Uri.fromFile(file));
+        if(isRecording){
+            binding.recordTimer.stop();
+            isRecording=false;
+            mediaRecorder.stop();
+            mediaRecorder.release();
+            mediaRecorder = null;
+
+            long time=SystemClock.elapsedRealtime()-binding.recordTimer.getBase();
+
+            if(time>=1000L){
+                binding.btnSend.setEnabled(false);
+                effectDialogOpen();
+            }
+        }
+
     }
+
+    private void effectDialogOpen() {
+        String path =this.getExternalFilesDir("/").getAbsolutePath();
+        DialogPlaySound dialog = new DialogPlaySound(this, path + "/" + recordFileName, new DialogPlaySound.IOnSenVoiceCloud() {
+            @Override
+            public void onSendVoiceCloud(String fileName) {
+                File file = new File(path,"audioRecordNew.mp3");
+                binding.btnSend.setEnabled(false);
+                uploadVoice("audioRecordNew.mp3", Uri.fromFile(file));
+
+            }
+
+            @Override
+            public void setEnabledSendBtn(boolean isEnabled) {
+                binding.btnSend.setEnabled(isEnabled);
+            }
+        });
+        dialog.show(getSupportFragmentManager(), "PlaySound");
+    }
+
     private void startRecording() {
         binding.recordTimer.setBase(SystemClock.elapsedRealtime());
         binding.recordTimer.start();
         String recordPath = this.getExternalFilesDir("/").getAbsolutePath();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss", Locale.getDefault());
-        Date now = new Date();
-        recordFileName = "Recording_" + formatter.format(now) + ".3gp";
+
+        recordFileName = "Recording_temp.mp3";
         mediaRecorder = new MediaRecorder();
+        try {
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         mediaRecorder.setOutputFile(recordPath + "/" + recordFileName);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
-        try {
             mediaRecorder.prepare();
+            mediaRecorder.start();
+            isRecording = true;
         } catch (IOException e) {
+            isRecording = false;
             e.printStackTrace();
         }
 
-        mediaRecorder.start();
     }
     private boolean checkPermissions() {
         //Check permission
@@ -199,14 +252,14 @@ public class ActivityNewMessage extends FragmentActivity {
                     if(snapshot.getValue()!=null){
                         listPost.clear();
                         for (DataSnapshot s:snapshot.getChildren()) {
-                          try {
-                              Post post=s.getValue(Post.class);
-                              listPost.add(post);
-                              binding.containerMessages.smoothScrollToPosition(listPost.size()-1);
-                          }catch (Exception e){
-                              Log.e(TAG,"onDataChange Exception ="+e.getLocalizedMessage());
-                              e.printStackTrace();
-                          }
+                            try {
+                                Post post=s.getValue(Post.class);
+                                listPost.add(post);
+                                binding.containerMessages.smoothScrollToPosition(listPost.size()-1);
+                            }catch (Exception e){
+                                Log.e(TAG,"onDataChange Exception ="+e.getLocalizedMessage());
+                                e.printStackTrace();
+                            }
 
                         }
                         AdapterListMessage adapter=new AdapterListMessage(listPost,ActivityNewMessage.this);
@@ -242,60 +295,67 @@ public class ActivityNewMessage extends FragmentActivity {
     }
 
     private void writeDatabese(Post p) {
-        FirebaseHelper.getFriendUserUpgrade();
         binding.edtMessage.setText("");
-
-        DatabaseReference mDatabase= FirebaseDatabase.getInstance().getReference();
-        String key=mDatabase.child(actUser.getUserUID()).child(MyUtil.COLUMN_MESSAGES).push().getKey();
+        binding.btnSend.setEnabled(true);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss", Locale.getDefault());
+        Date now = new Date();
+        String key=formatter.format(now);
         p.setMessageUID(key);
+
+        FirebaseHelper.getFriendUserUpgrade();
+        DatabaseReference mDatabase= FirebaseDatabase.getInstance().getReference();
+
+        // Gönderen Mesaj İşle
         mDatabase.child(MyUtil.COLUMN_USERS)
                 .child(actUser.getUserUID())
                 .child(MyUtil.COLUMN_MESSAGES)
                 .child(friendUser.getUserUID())
                 .child(key)
-                    .setValue(p);
-        p.setMySender(false);
+                .setValue(p);
+
+        //Karşı taraf mesaj işle
         mDatabase.child(MyUtil.COLUMN_USERS).child(friendUser.getUserUID())
                 .child(MyUtil.COLUMN_MESSAGES)
                 .child(actUser.getUserUID()).child(key).setValue(p);
-        sendNoti(friendUser.getOneSignalDeviceID(),friendUser.getUserName(),p.getText());
-       mDatabase.child(MyUtil.COLUMN_USERS)
+        sendNoti(friendUser.getOneSignalDeviceID(),actUser.getUserName(),p.getText());
+        //Okunmamış mesaj Yazımı...
+        mDatabase.child(MyUtil.COLUMN_USERS)
                 .child(friendUser.getUserUID())
                 .child(MyUtil.COLUMN_MESSAGES)
                 .child(actUser.getUserUID())
                 .child("count").addListenerForSingleValueEvent(new ValueEventListener() {
-                   @Override
-                   public void onDataChange(@NonNull DataSnapshot snapshot) {
-                       try{
-                           int count=snapshot.getValue(Integer.class);
-                           mDatabase.child(MyUtil.COLUMN_USERS)
-                                   .child(friendUser.getUserUID())
-                                   .child(MyUtil.COLUMN_MESSAGES)
-                                   .child(actUser.getUserUID())
-                                   .child("count").setValue(++count);
-                       }catch (Exception e){
-                           mDatabase.child(MyUtil.COLUMN_USERS)
-                                   .child(friendUser.getUserUID())
-                                   .child(MyUtil.COLUMN_MESSAGES)
-                                   .child(actUser.getUserUID())
-                                   .child("count").setValue(1);
-                       }
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try{
+                    int count=snapshot.getValue(Integer.class);
+                    mDatabase.child(MyUtil.COLUMN_USERS)
+                            .child(friendUser.getUserUID())
+                            .child(MyUtil.COLUMN_MESSAGES)
+                            .child(actUser.getUserUID())
+                            .child("count").setValue(++count);
+                }catch (Exception e){
+                    mDatabase.child(MyUtil.COLUMN_USERS)
+                            .child(friendUser.getUserUID())
+                            .child(MyUtil.COLUMN_MESSAGES)
+                            .child(actUser.getUserUID())
+                            .child("count").setValue(1);
+                }
 
 
-                   }
-                   @Override
-                   public void onCancelled(@NonNull DatabaseError error) {
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                   }
-               });
-
-
+            }
+        });
     }
+
     public void sendNoti(String deviceUID, String title,String message){
         try {
             //  "'headings':{'en':"+message +"},"+
             if(!friendUser.getOnlineDate().equals(MyUtil.IS_ONLINE)){
-                OneSignal.postNotification(new JSONObject("{'contents': {'en':"+title+" }," +
+                OneSignal.postNotification(new JSONObject("{'contents': {'en':'"+message+"' }," +
+                                "'headings':{'en':'"+title +"'},"+
                                 "'include_player_ids': ['" + deviceUID + "']}"),
                         new OneSignal.PostNotificationResponseHandler() {
                             @Override
@@ -315,6 +375,9 @@ public class ActivityNewMessage extends FragmentActivity {
         }
     }
     public void uploadVoice (String recordName, Uri recordUri) {
+
+
+
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference uppURIstorageRef = storageReference.child("post").child(actUser.getUserUID()).child(recordName);
         uppURIstorageRef.putFile(recordUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -329,13 +392,20 @@ public class ActivityNewMessage extends FragmentActivity {
                         String downloadURL = uri.toString();
                         String textMessage = binding.recordTimer.getText().toString();
                         //System.out.println("download URL: " + downloadURL);
+                        //String sendUID, String text, int typeMessage, String voiceURL
+                        Post postVoice=new Post(actUser.getUserUID()
+                                ,binding.recordTimer.getText().toString()
+                                ,Post.POST_AUDIO
+                                ,downloadURL
+                        );
 
-                        Post postVoice=new Post(textMessage,actUser.getUserUID(),Post.POST_AUDIO);
-                        postVoice.getVoiceURL();
+                        if(downloadURL!=null || downloadURL.length()>0){
+                            writeDatabese(postVoice);
+                            Toast.makeText(getApplicationContext(),"yüklendi!",Toast.LENGTH_LONG).show();
+                        }
 
-                        writeDatabese(postVoice);
-                        binding.btnSenVoice.setEnabled(true);
-                        Toast.makeText(getApplicationContext(),"yüklendi!",Toast.LENGTH_LONG).show();
+
+
 
 
                     }
@@ -353,7 +423,6 @@ public class ActivityNewMessage extends FragmentActivity {
 
 
     }
-
 
 
 

@@ -72,6 +72,7 @@ public class FragmentLoginPanel extends Fragment {
 
         binding.loginBtn.setOnClickListener(v->{
             if(isEmailAndPaswordConrol()){
+                    showProgress();
                     loginFirebase();
             }
         });
@@ -104,6 +105,7 @@ public class FragmentLoginPanel extends Fragment {
         openHomeActivity();
     }
     private void openHomeActivity() {
+        hideProgress();
         Intent i=new Intent(getActivity(), ActivityMessages.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
@@ -128,6 +130,15 @@ public class FragmentLoginPanel extends Fragment {
         return true;
     }
 
+    private void showProgress() {
+        binding.loginBtn.setEnabled(false);
+        binding.loginProgressbar.setVisibility(View.VISIBLE);
+    }
 
+    private void hideProgress() {
+
+        binding.loginBtn.setEnabled(true);
+        binding.loginProgressbar.setVisibility(View.GONE);
+    }
 
 }

@@ -18,7 +18,10 @@ import java.util.regex.Pattern;
 public class MyUtil {
     private static final String TAG ="MyUtil" ;
     public static final String USER_UID="uid";
-    public static final String FULL_NAME="fullName";
+    public static final String FULL_NAME="userName";
+    public static final String EMAIL="userEmail";
+    public static final String META_DATA="metaData";
+    public static final String IMAGE_URL="userPhoto";
     public static final String COLUMN_USERS="Users";
     public static final String COLUMN_MESSAGES="messages";
     public static final String IS_ONLINE="online";

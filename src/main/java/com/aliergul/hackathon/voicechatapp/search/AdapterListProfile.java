@@ -20,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -67,12 +68,24 @@ public class AdapterListProfile extends RecyclerView.Adapter {
 
             h.binding.tvEmail.setText(user.getUserEmail());
             h.binding.tvFullName.setText(user.getUserName());
+
             if(user.getUserPhoto().length()>10){
+                h.binding.lineProfileProgresbar.setVisibility(View.VISIBLE);
                 Picasso.get()
                         .load(user.getUserPhoto())
                         .resize(30, 30)
                         .centerCrop()
-                        .into(h.binding.profileImage);
+                        .into(h.binding.profileImage, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                h.binding.lineProfileProgresbar.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+
+                            }
+                        });
             }
             h.binding.btnMessage.setOnClickListener(v->{
                 Intent i=new Intent(mContext, ActivityNewMessage.class);

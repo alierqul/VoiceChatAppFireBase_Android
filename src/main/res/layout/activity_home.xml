@@ -37,5 +37,11 @@
         />
 
    <include layout="@layout/bottom_navigation_menu"/>
-
+   <ProgressBar
+       android:id="@+id/homeProgresbar"
+       android:visibility="gone"
+       android:layout_centerHorizontal="true"
+       android:layout_centerVertical="true"
+       android:layout_width="@dimen/heightProgressbar"
+       android:layout_height="@dimen/heightProgressbar"/>
 </RelativeLayout>

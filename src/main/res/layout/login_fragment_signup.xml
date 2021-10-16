@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lyt_signup"
     android:orientation="vertical"
     android:gravity="center_vertical"
@@ -130,3 +133,11 @@
         android:background="@color/white_greyish" />
 
 </LinearLayout>
+    <ProgressBar
+        android:id="@+id/registerProgresbar"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="@dimen/heightProgressbar"
+        android:layout_height="@dimen/heightProgressbar"/>
+</RelativeLayout>

@@ -16,13 +16,7 @@
         android:enabled="true"
         android:title="@string/navSearch">
     </item>
-    <item
-        android:id="@+id/nav_notifications"
-        android:icon="@drawable/ic_notifications"
-        app:showAsAction="ifRoom"
-        android:enabled="true"
-        android:title="@string/navNotificatios">
-    </item>
+
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_fullname"

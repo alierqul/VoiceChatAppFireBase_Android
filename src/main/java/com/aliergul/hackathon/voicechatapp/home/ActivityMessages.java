@@ -51,11 +51,9 @@ public class ActivityMessages extends AppCompatActivity {
         setContentView(binding.getRoot());
         listUser=new ArrayList<>();
         setupGeneralSettings();
-        if(mAuth.getCurrentUser()!=null){
-            FirebaseHelper.getActiveUserData();
-            getFirebaseUserdata(mAuth.getCurrentUser());
-            Log.w(TAG,"ActivityMessages onCreate");
-        }
+
+        FirebaseHelper.getActiveUserData();
+        getFirebaseUserdata();
         setupBottomNavigationView();
 
         setupRecyclerView();
@@ -95,7 +93,7 @@ public class ActivityMessages extends AppCompatActivity {
                     public void notificationOpened(OSNotificationOpenedResult result) {
                         // Capture Launch URL (App URL) here
                         String launchUrl = result.getNotification().getLaunchURL();
-                        Log.i("OneSignalExample", "launchUrl set with value: " + launchUrl);
+
                         if (launchUrl != null) {
                             // The following can be used to open an Activity of your choice.
                             // Replace - getApplicationContext() - with any Android Context.
@@ -103,7 +101,7 @@ public class ActivityMessages extends AppCompatActivity {
                             Intent intent = new Intent(getApplicationContext(), ActivityMessages.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.putExtra("openURL", launchUrl);
-                            Log.i("OneSignalExample", "openURL = " + launchUrl);
+
                             startActivity(intent);
                         }
                     }
@@ -112,9 +110,7 @@ public class ActivityMessages extends AppCompatActivity {
         // FireBase
         mAuth=FirebaseAuth.getInstance();
         mAuth.addAuthStateListener(listenerAccount(mAuth));
-
     }
-
     private FirebaseAuth.AuthStateListener listenerAccount(FirebaseAuth mAuth) {
         return new FirebaseAuth.AuthStateListener() {
             @Override
@@ -122,19 +118,19 @@ public class ActivityMessages extends AppCompatActivity {
                 FirebaseUser user=mAuth.getCurrentUser();
                 if(mAuth==null || user==null){
                     Log.d(TAG,"onAuthStateChanged");
-
                     openLoginPanel();
                 }else{
                     Log.d(TAG,"onAuthStateChanged TRUE");
-
                 }
             }
         };
     }
 
-    private void getFirebaseUserdata(FirebaseUser user) {
+    private void getFirebaseUserdata() {
+        showProgress();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child(MyUtil.COLUMN_USERS).child(user.getUid()).child(MyUtil.COLUMN_MESSAGES)
+        mDatabase .child(MyUtil.COLUMN_MESSAGES)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -150,27 +146,20 @@ public class ActivityMessages extends AppCompatActivity {
                                 adapter.setListe(listUser);
                                 FirebaseHelper.setListFriendUsers(listUser);
                             }catch (Exception e){
-
                             }
-
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
                         }
                     });
                 }
-
-
+                hideProgress();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
-
-
     }
 
     private void openLoginPanel(){
@@ -189,5 +178,12 @@ public class ActivityMessages extends AppCompatActivity {
     }
 
 
+    private void showProgress() {
+        binding.homeProgresbar.setVisibility(View.VISIBLE);
+    }
 
+    private void hideProgress() {
+
+        binding.homeProgresbar.setVisibility(View.GONE);
+    }
 }

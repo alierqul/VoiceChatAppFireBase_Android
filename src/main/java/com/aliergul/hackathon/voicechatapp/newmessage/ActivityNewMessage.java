@@ -7,24 +7,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.media.AudioManager;
 import android.media.MediaRecorder;
-import android.media.ToneGenerator;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
-
 import com.aliergul.hackathon.voicechatapp.R;
 import com.aliergul.hackathon.voicechatapp.databinding.ActivityNewMessageBinding;
 import com.aliergul.hackathon.voicechatapp.model.Post;
@@ -33,23 +25,18 @@ import com.aliergul.hackathon.voicechatapp.util.FirebaseHelper;
 import com.aliergul.hackathon.voicechatapp.util.MyUtil;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Logger;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.onesignal.OneSignal;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -57,11 +44,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class ActivityNewMessage extends FragmentActivity {
-    private String recordPermission = Manifest.permission.RECORD_AUDIO;
+    private final String recordPermission = Manifest.permission.RECORD_AUDIO;
     private static final String TAG = "ActivityNewMessage";
     private static final int FRAGMENT_ID = 100;
     private int PERMISSION_CODE = 200;
@@ -190,7 +175,7 @@ public class ActivityNewMessage extends FragmentActivity {
 
     private void effectDialogOpen() {
         String path =this.getExternalFilesDir("/").getAbsolutePath();
-        DialogPlaySound dialog = new DialogPlaySound(this, path + "/" + recordFileName, new DialogPlaySound.IOnSenVoiceCloud() {
+        DialogPlaySound dialog = new DialogPlaySound(ActivityNewMessage.this, path + "/" + recordFileName, new IOnSenVoiceCloud() {
             @Override
             public void onSendVoiceCloud(String fileName) {
                 File file = new File(path,"audioRecordNew.mp3");
@@ -246,7 +231,10 @@ public class ActivityNewMessage extends FragmentActivity {
 
         if(actUser!=null){
             Log.w(TAG,"getListMessages actUser=TRUE");
-            mDatabase.child(MyUtil.COLUMN_USERS).child(actUser.getUserUID()).child(MyUtil.COLUMN_MESSAGES).child(friendUser.getUserUID()).addValueEventListener(new ValueEventListener() {
+            mDatabase.child(MyUtil.COLUMN_MESSAGES)
+                    .child(actUser.getUserUID())
+                    .child(friendUser.getUserUID())
+                    .addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.getValue()!=null){
@@ -264,9 +252,8 @@ public class ActivityNewMessage extends FragmentActivity {
                         }
                         AdapterListMessage adapter=new AdapterListMessage(listPost,ActivityNewMessage.this);
                         binding.containerMessages.setAdapter(adapter);
-                        mDatabase.child(MyUtil.COLUMN_USERS)
+                        mDatabase.child(MyUtil.COLUMN_MESSAGES)
                                 .child(actUser.getUserUID())
-                                .child(MyUtil.COLUMN_MESSAGES)
                                 .child(friendUser.getUserUID())
                                 .child("count").setValue(0);
                     }
@@ -301,42 +288,43 @@ public class ActivityNewMessage extends FragmentActivity {
         Date now = new Date();
         String key=formatter.format(now);
         p.setMessageUID(key);
+        //Notifikasyon Gönderelim
+        sendNoti(friendUser.getOneSignalDeviceID(),actUser.getUserName(),p.getText());
 
+        //FireBase
         FirebaseHelper.getFriendUserUpgrade();
         DatabaseReference mDatabase= FirebaseDatabase.getInstance().getReference();
 
         // Gönderen Mesaj İşle
-        mDatabase.child(MyUtil.COLUMN_USERS)
+        mDatabase.child(MyUtil.COLUMN_MESSAGES)
                 .child(actUser.getUserUID())
-                .child(MyUtil.COLUMN_MESSAGES)
                 .child(friendUser.getUserUID())
                 .child(key)
                 .setValue(p);
 
         //Karşı taraf mesaj işle
-        mDatabase.child(MyUtil.COLUMN_USERS).child(friendUser.getUserUID())
-                .child(MyUtil.COLUMN_MESSAGES)
-                .child(actUser.getUserUID()).child(key).setValue(p);
-        sendNoti(friendUser.getOneSignalDeviceID(),actUser.getUserName(),p.getText());
-        //Okunmamış mesaj Yazımı...
-        mDatabase.child(MyUtil.COLUMN_USERS)
+        mDatabase.child(MyUtil.COLUMN_MESSAGES)
                 .child(friendUser.getUserUID())
-                .child(MyUtil.COLUMN_MESSAGES)
+                .child(actUser.getUserUID())
+                .child(key)
+                .setValue(p);
+
+        //Okunmamış mesaj Yazımı...
+        mDatabase.child(MyUtil.COLUMN_MESSAGES)
+                .child(friendUser.getUserUID())
                 .child(actUser.getUserUID())
                 .child("count").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try{
                     int count=snapshot.getValue(Integer.class);
-                    mDatabase.child(MyUtil.COLUMN_USERS)
+                    mDatabase.child(MyUtil.COLUMN_MESSAGES)
                             .child(friendUser.getUserUID())
-                            .child(MyUtil.COLUMN_MESSAGES)
                             .child(actUser.getUserUID())
                             .child("count").setValue(++count);
                 }catch (Exception e){
-                    mDatabase.child(MyUtil.COLUMN_USERS)
+                    mDatabase.child(MyUtil.COLUMN_MESSAGES)
                             .child(friendUser.getUserUID())
-                            .child(MyUtil.COLUMN_MESSAGES)
                             .child(actUser.getUserUID())
                             .child("count").setValue(1);
                 }

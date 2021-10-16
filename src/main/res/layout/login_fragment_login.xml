@@ -118,6 +118,12 @@
 
     </LinearLayout>
 
-
+    <ProgressBar
+        android:id="@+id/loginProgressbar"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="@dimen/heightProgressbar"
+        android:layout_height="@dimen/heightProgressbar"/>
 
 </RelativeLayout>

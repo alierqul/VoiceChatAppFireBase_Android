@@ -3,56 +3,55 @@ package com.aliergul.hackathon.voicechatapp.newmessage;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.net.Uri;
-import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import com.aliergul.hackathon.voicechatapp.R;
 import com.aliergul.hackathon.voicechatapp.databinding.DialogVoiceChooseEffectBinding;
+
+import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-import android.os.Environment;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.RadioGroup;
+import android.widget.RadioButton;
 
 import com.arthenica.mobileffmpeg.FFmpeg;
-
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 
-public class DialogPlaySound extends DialogFragment  {
+
+public class DialogPlaySound extends DialogFragment implements View.OnClickListener {
+
+    public DialogPlaySound(Context mContext, String fileName,IOnSenVoiceCloud onSenVoiceCloud) {
+        this.mContext=mContext;
+
+        //path== /storage/emulated/0/Android/data/com.aliergul.hackathon.voicechatapp/files/Recording_temp.3gp
+        this.fileName=fileName;
+        fileNameNew = mContext.getExternalFilesDir("/").getAbsolutePath()+ "/audioRecordNew.mp3";
+        String fileNameMerge = mContext.getExternalFilesDir("/").getAbsolutePath() + "/audioRecordMerge.mp3";
+        this.onSenVoiceCloud=onSenVoiceCloud;
+
+    }
     private static final String TAG = "DialogPlaySound";
     DialogVoiceChooseEffectBinding binding ;
 
     private String fileName  = "";
     private String fileNameNew  = "";
-    private String fileNameMerge  = "";
-    private boolean isEffectAddedOnce = false;
-    private MediaRecorder recorder = null;
-    private MediaPlayer mediaPlayer = null;
-    private boolean isPlaying = false;
-    private Context mContext;
-    private Uri uri;
-    private  IOnSenVoiceCloud onSenVoiceCloud;
-    interface IOnSenVoiceCloud{
-        void onSendVoiceCloud(String fileName);
-        void setEnabledSendBtn(boolean isEnabled);
-    }
-    public DialogPlaySound(Context mContext, String fileName,IOnSenVoiceCloud onSenVoiceCloud) {
-        this.mContext=mContext;
-        this.uri=uri;
-        //path== /storage/emulated/0/Android/data/com.aliergul.hackathon.voicechatapp/files/Recording_temp.3gp
-        this.fileName=fileName;
-        fileNameNew = mContext.getExternalFilesDir("/").getAbsolutePath()+ "/audioRecordNew.mp3";
-        fileNameMerge = mContext.getExternalFilesDir("/").getAbsolutePath()+ "/audioRecordMerge.mp3";
-        this.onSenVoiceCloud=onSenVoiceCloud;
+    private  MediaRecorder recorder = null;
+    private  Context mContext;
+    private IOnSenVoiceCloud onSenVoiceCloud;
 
+
+    private void checkClear(){
+        binding.rdCase.setChecked(false);
+        binding.rdChipMunk.setChecked(false);
+        binding.rdOrinal.setChecked(false);
+        binding.rdRadio.setChecked(false);
+        binding.rdRobot.setChecked(false);
     }
+
+
 
     @NonNull
     @Override
@@ -60,30 +59,19 @@ public class DialogPlaySound extends DialogFragment  {
         binding=DialogVoiceChooseEffectBinding.inflate(getLayoutInflater());
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(binding.getRoot());
-        binding.rgEffectgroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                switch (i){
-                    case R.id.rd_Radio:
-                        playRadio(fileName,fileNameNew);
-                        break;
-                    case R.id.rd_Robot:
-                        playRobot(fileName,fileNameNew);
-                        break;
-                    case R.id.rd_Case:
-                        playCave(fileName,fileNameNew);
-                        break;
-                    case R.id.rd_ChipMunk:
-                        playChipmunk(fileName,fileNameNew);
-                        break;
-                }
-            }
-        });
+        binding.rdCase.setOnClickListener(this);
+        binding.rdChipMunk.setOnClickListener(this);
+        binding.rdOrinal.setOnClickListener(this);
+        binding.rdRadio.setOnClickListener(this);
+        binding.rdRobot.setOnClickListener(this);
+
         // Gönder Butonu
         binding.voiceSend.setOnClickListener(v->{
             this.dismiss();
-            onSenVoiceCloud.onSendVoiceCloud(fileNameNew);
-
+            if(!binding.rdOrinal.isChecked())
+                onSenVoiceCloud.onSendVoiceCloud(fileNameNew);
+            else
+                onSenVoiceCloud.onSendVoiceCloud(fileName);
 
         });
 
@@ -107,8 +95,8 @@ public class DialogPlaySound extends DialogFragment  {
         if (rc == FFmpeg.RETURN_CODE_SUCCESS) {
             Log.i("GetInfo", "Komut yürütme başarıyla tamamlandı.");
               hideProgress();
-            isEffectAddedOnce = true;
-            start();
+            boolean isEffectAddedOnce = true;
+            start(fileNameNew);
         } else if (rc == FFmpeg.RETURN_CODE_CANCEL) {
             Log.i("GetInfo", "Komut yürütme kullanıcı tarafından iptal edildi.");
         } else {
@@ -123,10 +111,10 @@ public class DialogPlaySound extends DialogFragment  {
         }
     }
 
-    private void start() {
-        mediaPlayer = new MediaPlayer();
+    private void start(String fileNameNew) {
+        MediaPlayer mediaPlayer = new MediaPlayer();
             try {
-                isPlaying=true;
+
                 mediaPlayer.setDataSource(fileNameNew);
                 mediaPlayer.prepare();
                 mediaPlayer.start();
@@ -226,4 +214,42 @@ private void playCave(String fileName1 , String fileName2) {
     }
 
 
+    @Override
+    public void onClick(View view) {
+        checkClear();
+        switch (view.getId()) {
+            case R.id.rd_Radio: {
+
+                playRadio(fileName, fileNameNew);
+                break;
+            }
+
+            case R.id.rd_Robot: {
+
+                playRobot(fileName, fileNameNew);
+                break;
+            }
+
+            case R.id.rd_Case: {
+
+                playCave(fileName, fileNameNew);
+                break;
+            }
+
+            case R.id.rd_ChipMunk: {
+
+                playChipmunk(fileName, fileNameNew);
+                break;
+            }
+
+            case R.id.rd_orinal: {
+
+                start(fileName);
+                break;
+            }
+
+
+        }
+        ((RadioButton) view).setChecked(true);
+    }
 }

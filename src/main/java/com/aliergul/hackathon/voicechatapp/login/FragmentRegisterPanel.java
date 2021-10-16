@@ -61,7 +61,8 @@ public class FragmentRegisterPanel extends Fragment {
         });
         binding.signUpBtn.setOnClickListener(v->{
             if(isEmailAndPaswordConrol()){
-                binding.signUpBtn.setEnabled(false);
+
+                showProgress();
                 registerFirebase();
 
             }
@@ -82,7 +83,7 @@ public class FragmentRegisterPanel extends Fragment {
                             updateUI(createUser);
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            binding.signUpBtn.setEnabled(true);
+                            hideProgress();
                             Toast.makeText(getActivity(), getString(R.string.invalidDatabase),
                                     Toast.LENGTH_SHORT).show();
 
@@ -96,6 +97,7 @@ public class FragmentRegisterPanel extends Fragment {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
                                     Log.w(TAG,"onComplete="+createUser.toString());
+                                    hideProgress();
                                     openHomeActivity();
                                 }
 
@@ -161,4 +163,15 @@ public class FragmentRegisterPanel extends Fragment {
         }
         return true;
     }
+    private void showProgress() {
+        binding.signUpBtn.setEnabled(false);
+        binding.registerProgresbar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgress() {
+
+        binding.signUpBtn.setEnabled(true);
+        binding.registerProgresbar.setVisibility(View.GONE);
+    }
+
 }

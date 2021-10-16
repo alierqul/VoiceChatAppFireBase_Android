@@ -105,7 +105,11 @@ static {
         }
 
     }
-
+    public static void reFirebaseColumn(String column,String newValue){
+        database.getReference().child(MyUtil.COLUMN_USERS)
+                .child(activeUser.getUserUID())
+                .child(column).setValue(newValue);
+    }
     public static void reWriteOneSignalKey(){
         OSDeviceState device = OneSignal.getDeviceState();
         String deviceID = device.getUserId();

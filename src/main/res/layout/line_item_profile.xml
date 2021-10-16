@@ -61,6 +61,11 @@
             android:background="@drawable/cirle_background"
             android:layout_width="35dp"
             android:layout_height="wrap_content"/>
+        <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/lineProfileProgresbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

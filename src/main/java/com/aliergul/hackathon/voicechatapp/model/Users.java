@@ -38,7 +38,7 @@ public class Users implements Serializable {
         this.userName = userName;
         this.userEmail = userEmail;
         this.userPhoto = userPhoto;
-        this.metaData=(userName.concat("#").concat(userEmail)).toLowerCase();
+        this.metaData=(userName.concat(" ").concat(userEmail.substring(0,userEmail.indexOf('@')))).toLowerCase();
 
     }
 

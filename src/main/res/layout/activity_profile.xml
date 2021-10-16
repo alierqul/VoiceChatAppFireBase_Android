@@ -15,13 +15,34 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/navProfile"
-            android:textStyle="bold"
-            android:textColor="@color/PrimaryTextColor"
-            android:textSize="@dimen/headerXL"/>
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/btnCancel"
+                android:layout_marginStart="@dimen/paddingL"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/close"
+                />
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/btnSave"
+                android:layout_marginEnd="@dimen/paddingL"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_save"
+                />
+            <TextView
+
+                android:id="@+id/tv_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/navProfile"
+                android:textColor="@color/PrimaryTextColor"
+                android:textSize="@dimen/headerXL"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/btn_options"
@@ -33,17 +54,25 @@
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_below="@id/toolbarProfile"
-        android:layout_above="@id/linear1"
-        android:layout_centerHorizontal="true"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profile_image"
         android:layout_width="110dp"
         android:layout_height="110dp"
+        android:layout_above="@id/linear1"
+        android:layout_below="@id/toolbarProfile"
+        android:layout_centerHorizontal="true"
         android:src="@drawable/ic_fullname"
-        app:civ_border_width="2dp"
-        app:civ_border_color="#FF000000"/>
+        app:civ_border_color="#FF000000"
+        app:civ_border_width="2dp" />
+    <ImageView
+        android:id="@+id/btnChangeImage"
+        android:visibility="gone"
+        android:layout_marginBottom="-100dp"
+        android:layout_toRightOf="@id/profile_image"
+        android:layout_above="@id/profile_image"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/ic_image_change"/>
     <LinearLayout
         android:id="@+id/linear1"
         android:layout_centerInParent="true"
@@ -65,7 +94,6 @@
             android:inputType="textCapWords"
             android:padding="10dp"
             android:singleLine="true"
-            android:textColorHint="@color/white"
             android:textSize="@dimen/headerL" />
 
 
@@ -83,13 +111,12 @@
             android:inputType="textEmailAddress"
             android:padding="10dp"
             android:singleLine="true"
-            android:textColorHint="@color/white"
             android:textSize="@dimen/headerL" />
 
 
 
         <EditText
-            android:enabled="false"
+            android:visibility="gone"
             android:id="@+id/password"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -101,7 +128,6 @@
             android:inputType="textPassword"
             android:padding="10dp"
             android:singleLine="true"
-            android:textColorHint="@color/white"
             android:textSize="@dimen/headerL" />
 
         <EditText
@@ -118,15 +144,31 @@
             android:inputType="textPassword"
             android:padding="10dp"
             android:singleLine="true"
-            android:textColorHint="@color/white"
+            android:textSize="@dimen/headerL" />
+        <Button
+            android:visibility="gone"
+            android:id="@+id/btnPassChange"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:drawableLeft="@drawable/password"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:text="@string/btnPassowrdChange"
+
+            android:padding="10dp"
+            android:singleLine="true"
             android:textSize="@dimen/headerL" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1px"
-            android:background="@color/white_greyish" />
+
     </LinearLayout>
 
-
+    <ProgressBar
+        android:visibility="gone"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/profileProgresbar"
+        android:layout_width="@dimen/heightProgressbar"
+        android:layout_height="@dimen/heightProgressbar"/>
     <include layout="@layout/bottom_navigation_menu"/>
 </RelativeLayout>

@@ -24,7 +24,13 @@
         app:showAsAction="ifRoom"
         android:title="@string/navProfile">
     </item>
-
+    <item
+        android:id="@+id/nav_Info"
+        android:icon="@drawable/ic_info"
+        android:enabled="true"
+        app:showAsAction="ifRoom"
+        android:title="@string/homeInfo">
+    </item>
 
 
 </menu>

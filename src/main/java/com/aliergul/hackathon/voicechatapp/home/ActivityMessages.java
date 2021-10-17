@@ -1,13 +1,30 @@
 package com.aliergul.hackathon.voicechatapp.home;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 
 import com.aliergul.hackathon.voicechatapp.R;
 import com.aliergul.hackathon.voicechatapp.databinding.ActivityHomeBinding;
@@ -50,17 +67,15 @@ public class ActivityMessages extends AppCompatActivity {
         binding=ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         listUser=new ArrayList<>();
-        setupGeneralSettings();
-
-        FirebaseHelper.getActiveUserData();
-        getFirebaseUserdata();
-        setupBottomNavigationView();
-
+        mAuth=FirebaseAuth.getInstance();
+        mAuth.addAuthStateListener(listenerAccount(mAuth));
+        setupNoifications();
         setupRecyclerView();
-
+        setupBottomNavigationView();
 
 
     }
+
 
     private void setupRecyclerView() {
         adapter=new AdapterListProfile(new ArrayList<Users>(),getString(R.string.emptyMessages),ActivityMessages.this);
@@ -80,7 +95,7 @@ public class ActivityMessages extends AppCompatActivity {
         });
     }
 
-    private void setupGeneralSettings() {
+    private void setupNoifications() {
         OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
 
         // OneSignal Initialization
@@ -108,8 +123,7 @@ public class ActivityMessages extends AppCompatActivity {
                 });
 
         // FireBase
-        mAuth=FirebaseAuth.getInstance();
-        mAuth.addAuthStateListener(listenerAccount(mAuth));
+
     }
     private FirebaseAuth.AuthStateListener listenerAccount(FirebaseAuth mAuth) {
         return new FirebaseAuth.AuthStateListener() {
@@ -121,10 +135,13 @@ public class ActivityMessages extends AppCompatActivity {
                     openLoginPanel();
                 }else{
                     Log.d(TAG,"onAuthStateChanged TRUE");
+                    FirebaseHelper.getActiveUserData();
+                    getFirebaseUserdata();
                 }
             }
         };
     }
+
 
     private void getFirebaseUserdata() {
         showProgress();

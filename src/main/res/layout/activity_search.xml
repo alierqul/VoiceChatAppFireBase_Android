@@ -4,25 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gri"
+    android:background="@color/background"
     tools:context=".search.ActivitySearch">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarNotifications"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottomNavigatorHeight"
-        android:background="@color/blue">
+        android:background="@color/primary">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
+                android:textColor="@color/on_primary"
                 android:id="@+id/baslik"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/navSearch"
                 android:textStyle="bold"
-                android:textColor="@color/PrimaryTextColor"
                 android:textSize="@dimen/headerXL"/>
 
         </RelativeLayout>

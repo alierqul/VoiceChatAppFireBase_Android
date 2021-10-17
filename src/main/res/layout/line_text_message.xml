@@ -18,11 +18,7 @@
         android:paddingEnd="@dimen/paddingXL"
         android:background="@drawable/shape_bg_incoming_bubble"
         >
-        <androidx.cardview.widget.CardView
-            app:cardBackgroundColor="@android:color/transparent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            card_view:cardCornerRadius="5dp">
+
         <TextView
             android:textAlignment="textEnd"
             android:minWidth="150dp"
@@ -31,7 +27,7 @@
             android:layout_height="wrap_content"
             android:text="Merhaba Dünya"
             android:textSize="@dimen/headerXL" />
-        </androidx.cardview.widget.CardView>
+
         <TextView
             android:layout_gravity="end"
             android:id="@+id/tvDate"

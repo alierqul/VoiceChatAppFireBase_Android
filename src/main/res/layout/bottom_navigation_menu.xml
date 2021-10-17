@@ -13,9 +13,9 @@
             android:layout_gravity="bottom"
             android:layout_marginEnd="0dp"
             android:layout_marginStart="0dp"
-            app:itemBackground="@color/blue"
+            app:itemBackground="@color/primary"
 
-            app:itemTextColor="@color/white"
+            app:itemTextColor="@color/on_primary"
 
             app:menu="@menu/menu_navigation_with_view_pager" />
 

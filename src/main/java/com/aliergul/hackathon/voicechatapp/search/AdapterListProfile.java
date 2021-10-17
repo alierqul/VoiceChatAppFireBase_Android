@@ -104,9 +104,10 @@ public class AdapterListProfile extends RecyclerView.Adapter {
         //Okunmamış mesaj Yazımı...
 
         Users actUSer= FirebaseHelper.getActiveUser();
-        FirebaseDatabase.getInstance().getReference().child(MyUtil.COLUMN_USERS)
-                .child(actUSer.getUserUID())
+
+        FirebaseDatabase.getInstance().getReference()
                 .child(MyUtil.COLUMN_MESSAGES)
+                .child(actUSer.getUserUID())
                 .child(user.getUserUID())
                 .child("count").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -53,10 +53,13 @@ public class ActivityProfile extends AppCompatActivity {
             activeUser=FirebaseHelper.getActiveUser();
         }
         setupProfile(activeUser);
-        clickItemView();
+        menuClickBtn();
     }
 
-    private void clickItemView() {
+    private void menuClickBtn() {
+        binding.btnEmailVerified.setOnClickListener(v->{
+            FirebaseHelper.sendVerificationEmail(ActivityProfile.this);
+        });
         binding.btnOptions.setOnClickListener(v->{
             PopupMenu menu=new PopupMenu(this,binding.btnOptions);
             menu.inflate(R.menu.menu_profile_with_edit);
@@ -83,6 +86,10 @@ public class ActivityProfile extends AppCompatActivity {
 
     private void editProfile() {
        modeEditViewButton();
+       binding.btnCancel.setOnClickListener(v->{
+           modeShowViewButton();
+           setupProfile(activeUser);
+       });
        //Resim Değiştir Tıklama
        binding.btnChangeImage.setOnClickListener(v-> {
            //upload image
@@ -218,15 +225,6 @@ public class ActivityProfile extends AppCompatActivity {
         return true;
     }
 
-    //check if external storage is mounted. helper method
-    private boolean isExternalStorageAvailable() {
-        String state = Environment.getExternalStorageState();
-        if (state.equals(Environment.MEDIA_MOUNTED)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     private void modeEditViewButton(){
         binding.btnPassChange.setVisibility(View.VISIBLE);
@@ -292,6 +290,16 @@ public class ActivityProfile extends AppCompatActivity {
         if(u!=null){
             binding.edtFullName.setText(u.getUserName());
             binding.edtUserEmailId.setText(u.getUserEmail());
+            FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
+            boolean emailVerified = user.isEmailVerified();
+            if(!emailVerified){
+                binding.edtUserEmailId.setError(getString(R.string.notEmailVerified));
+                binding.btnEmailVerified.setVisibility(View.VISIBLE);
+
+            }else{
+                binding.edtUserEmailId.setError(null);
+                binding.btnEmailVerified.setVisibility(View.GONE);
+            }
             if(u.getUserPhoto().length()>5){
                 showProgress();
                 Picasso.get()

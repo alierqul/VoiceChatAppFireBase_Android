@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:text="@string/forgetme"
-        android:textColor="@color/white"
         android:textSize="@dimen/headerXXL"
         android:textStyle="bold"/>
     <TextView
@@ -20,7 +19,6 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:text="@string/registered_emailid"
-        android:textColor="@color/white_greyish"
         android:textSize="@dimen/headerL"
         android:textStyle="bold"/>
 
@@ -36,14 +34,12 @@
         android:inputType="textEmailAddress"
         android:padding="10dp"
         android:singleLine="true"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
+
         android:textSize="@dimen/headerL" />
 
     <View
         android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:background="@color/white_greyish" />
+        android:layout_height="1px" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -59,31 +55,17 @@
             android:layout_alignParentRight="true"
             android:gravity="right"
             android:text="@string/forgotPassword"
-            android:textColor="@color/white"
             android:textSize="@dimen/headerL"
             android:layout_marginTop="10dp"
             android:textStyle="bold" />
 
+
         <TextView
-            android:layout_marginTop="30dp"
-            android:id="@+id/EmailVerifiedSend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/forgot_button"
-            android:layout_alignParentRight="true"
-            android:text="@string/EmailVerifiedSend"
-            android:textColor="@color/white"
-            android:textSize="@dimen/headerL"
-            android:textStyle="bold"/>
-        <TextView
+            android:layout_marginTop="10dp"
             android:id="@+id/backToLoginBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="30dp"
-            android:layout_below="@id/forgot_button"
             android:text="@string/back"
-            android:textColor="@color/white"
             android:textSize="@dimen/headerL"
             android:textStyle="bold" />
 

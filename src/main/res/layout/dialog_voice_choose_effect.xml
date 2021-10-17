@@ -4,70 +4,11 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:minWidth="200dp"
+    android:background="@color/outcoming"
     android:layout_marginTop="@dimen/paddingL">
-    <RadioGroup
-        android:layout_toRightOf="@id/btn_play"
-        android:layout_toLeftOf="@id/voiceSend"
-        android:gravity="center"
-        android:id="@+id/rgEffectgroup"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        <RadioButton
-            android:id="@+id/rd_Radio"
-            android:text="Radyo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <RadioButton
-            android:id="@+id/rd_Robot"
-            android:text="Robot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-                <RadioButton
-                    android:id="@+id/rd_Case"
-                    android:text="Yankılı"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <RadioButton
-                    android:id="@+id/rd_ChipMunk"
-                    android:text="Sincap"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-        </LinearLayout>
-        <RadioButton
-            android:checked="true"
-            android:id="@+id/rd_orinal"
-            android:text="Orijinal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </RadioGroup>
-    <ImageView
-        android:id="@+id/btn_play"
-        android:layout_width="75dp"
-        android:layout_height="@dimen/playBtnHeight"
-        android:layout_centerVertical="true"
-        android:src="@drawable/ic_play_circle" />
 
 
-    <ImageView
-        android:layout_marginEnd="16dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:id="@+id/voiceSend"
-        android:layout_width="75dp"
-        android:layout_height="@dimen/playBtnHeight"
-        android:src="@drawable/ic_send" />
+
     <ProgressBar
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
@@ -76,4 +17,68 @@
         android:indeterminateTint="#000"
         android:visibility="gone"
         android:layout_height="wrap_content"/>
+    <RadioGroup
+
+        android:gravity="center"
+        android:id="@+id/rgEffectgroup"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RadioButton
+            android:layout_weight="1"
+            android:drawableBottom="@drawable/rb_radio"
+            android:id="@+id/rd_Radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <RadioButton
+            android:layout_weight="1"
+            android:id="@+id/rd_Robot"
+            android:drawableBottom="@drawable/rb_chatbot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <RadioButton
+            android:layout_weight="1"
+            android:id="@+id/rd_Case"
+            android:drawableBottom="@drawable/rb_cave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <RadioButton
+            android:layout_weight="1"
+            android:id="@+id/rd_ChipMunk"
+            android:drawableBottom="@drawable/rb_squirrel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <RadioButton
+            android:layout_weight="1"
+            android:checked="true"
+            android:id="@+id/rd_orinal"
+            android:drawableBottom="@drawable/ic_fullname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+    </RadioGroup>
+ <LinearLayout
+     android:gravity="center"
+     android:orientation="horizontal"
+     android:layout_below="@id/rgEffectgroup"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content">
+
+     <Button
+         android:layout_margin="3dp"
+         android:layout_weight="1"
+         android:id="@+id/btnCancel"
+         android:text="İptal"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"/>
+     <Button
+         android:layout_margin="3dp"
+         android:layout_weight="1"
+         android:id="@+id/voiceSend"
+         android:layout_centerHorizontal="true"
+         android:text="Gönder"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"/>
+ </LinearLayout>
 </RelativeLayout>

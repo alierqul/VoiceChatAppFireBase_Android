@@ -23,7 +23,6 @@
             android:gravity="center"
             android:padding="10dp"
             android:text="@string/login"
-            android:textColor="@color/GreysiTextColor"
             android:textSize="@dimen/headerXXL"
             android:textStyle="bold" />
 
@@ -40,14 +39,9 @@
             android:inputType="textEmailAddress"
             android:padding="10dp"
             android:singleLine="true"
-            android:textColor="@color/PrimaryTextColor"
-            android:textColorHint="@color/white"
             android:textSize="@dimen/headerL" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1px"
-            android:background="@color/white_greyish" />
+
 
         <EditText
             android:id="@+id/login_password"
@@ -61,8 +55,6 @@
             android:inputType="textPassword"
             android:padding="10dp"
             android:singleLine="true"
-            android:textColor="@color/PrimaryTextColor"
-            android:textColorHint="@color/white"
             android:textSize="@dimen/headerL" />
 
         <LinearLayout
@@ -73,13 +65,13 @@
             android:paddingTop="8dp" >
 
             <CheckBox
+                style="@style/MyCheckBoxStyle"
                 android:id="@+id/show_hide_password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/show_pwd"
-                android:textColor="@color/PrimaryTextColor"
-                android:textSize="@dimen/headerL" />
+                 />
 
             <TextView
                 android:id="@+id/dontLogin"
@@ -89,7 +81,6 @@
                 android:gravity="end"
                 android:padding="5dp"
                 android:text="@string/forgot"
-                android:textColor="@color/PrimaryTextColor"
                 android:textSize="@dimen/headerL" />
         </LinearLayout>
 
@@ -112,7 +103,6 @@
             android:padding="5dp"
             android:text="@string/newUser"
             android:textAlignment="gravity"
-            android:textColor="@color/PrimaryTextColor"
             android:textSize="@dimen/headerL" />
 
 

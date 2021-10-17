@@ -2,24 +2,30 @@
     <!-- Base application theme. -->
     <style name="Theme.VoiceChatApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/blue</item>
-        <item name="colorPrimaryVariant">@color/blueLight</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnBackground">@color/on_background</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        <item name="colorOnSecondary">@color/on_primary</item>
 
-
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal</item>
-        <item name="colorSecondaryVariant">@color/teal</item>
-        <item name="colorOnSecondary">@color/gri</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="android:textColor">@color/SecondaryTextColor</item>
-        <item name="android:editTextColor">@color/SecondaryTextColor</item>
-        <item name="android:textColorPrimary">@color/PrimaryTextColor</item>
-        <item name="android:textColorSecondary">@color/SecondaryTextColor</item>
-        <item name="android:textColorTertiary">@color/gri</item>
-        <item name="android:textColorPrimaryInverse">@color/SecondaryTextColor</item>
-        <item name="android:textColorSecondaryInverse">@color/SecondaryTextColor</item>
-        <item name="android:textColorTertiaryInverse">@color/SecondaryTextColor</item>
+        <item name="android:textColor">@color/on_secondary</item>
+        <item name="android:editTextColor">@color/on_secondary</item>
+        <item name="android:textColorHint">@color/on_secondary</item>
+        <item name="android:textColorPrimary">@color/on_secondary</item>
+        <item name="android:textColorSecondary">@color/on_background</item>
+        <item name="android:textColorTertiary">@color/on_secondary</item>
+        <item name="android:textColorPrimaryInverse">@color/on_secondary</item>
+        <item name="android:textColorSecondaryInverse">@color/on_secondary</item>
+        <item name="android:textColorTertiaryInverse">@color/on_secondary</item>
+    </style>
+    <style name="MyCheckBoxStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:textColor">@color/on_surface</item>
+        <item name="buttonTint">@color/primary</item>
+        <item name="android:textSize">@dimen/headerL</item>
     </style>
 </resources>

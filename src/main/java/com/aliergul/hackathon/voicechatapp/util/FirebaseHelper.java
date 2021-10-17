@@ -1,10 +1,14 @@
 package com.aliergul.hackathon.voicechatapp.util;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.aliergul.hackathon.voicechatapp.model.Users;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -120,6 +124,35 @@ static {
         database.getReference().child(MyUtil.COLUMN_USERS).child(activeUser.getUserUID()).child("onlineDate").setValue(log);
     }
 
+    public static void sendVerificationEmail(Context mContext){
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+
+        user.sendEmailVerification()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "Email sent.");
+                            Toast.makeText(mContext,"Doğrulama linki Eposta Adresinize Gönderildi.\nEposta Adresinizi Kontol Ediniz.",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+    public static void sendPaswordResetEmail(Context mContext,String emailAddress){
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        auth.sendPasswordResetEmail(emailAddress)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "Email sent.");
+                            Toast.makeText(mContext,"Sıfırlama Epostası Gönderildi.\nEposta Adresinizi Kontol Ediniz.",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
 
 }
 

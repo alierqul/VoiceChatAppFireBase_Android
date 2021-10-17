@@ -47,5 +47,10 @@
     <string name="nothingMessageInbox">Hiç Mesajınız Yok</string>
     <string name="btnPassowrdChange">Şifre Değiştir</string>
     <string name="changedpassword">Şifre Değiştirildi.\nTekrar Giriş Yapınız.</string>
+    <string name="homeDarkMode">Koyu Tema</string>
+    <string name="homeInfo">info</string>
+    <string name="notEmailVerified">Email Adresiniz Doğrulanmamış !</string>
+    <string name="btnEmailVerified">Doğrulama Maili Gönder</string>
+    <string name="github">https://github.com/alierqul/VoiceChatAppFireBase.git</string>
 
 </resources>

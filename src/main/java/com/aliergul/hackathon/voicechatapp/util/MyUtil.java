@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MyUtil {
+    public static final String POSTDATE = "date";
     private static final String TAG ="MyUtil" ;
     public static final String USER_UID="uid";
     public static final String FULL_NAME="userName";

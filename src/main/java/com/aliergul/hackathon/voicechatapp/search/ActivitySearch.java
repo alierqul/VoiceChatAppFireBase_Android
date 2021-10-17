@@ -97,11 +97,11 @@ public class ActivitySearch extends AppCompatActivity {
             }
         });
     }
-
+        //.startAt("%${"+queryText+"}%")
     private void  getFindProfiles(String queryText){
         DatabaseReference mDatabase=FirebaseDatabase.getInstance().getReference();
         mDatabase.child("Users").orderByChild("metaData")
-                .startAt("%${"+queryText+"}%")
+                .startAt(queryText)
                 .endAt(queryText+"\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -114,7 +114,6 @@ public class ActivitySearch extends AppCompatActivity {
                             listUser.add(users);
                         }
                     }
-
 
                 }
                 adapter.updateList(listUser);

@@ -18,7 +18,6 @@
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/signUp"
-        android:textColor="@color/white_greyish"
         android:textSize="@dimen/headerXXL"
         android:textStyle="bold" />
 
@@ -34,8 +33,6 @@
         android:inputType="textCapWords"
         android:padding="10dp"
         android:singleLine="true"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
         android:textSize="@dimen/headerL" />
 
 
@@ -51,8 +48,6 @@
         android:inputType="textEmailAddress"
         android:padding="10dp"
         android:singleLine="true"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
         android:textSize="@dimen/headerL" />
 
 
@@ -69,8 +64,6 @@
         android:inputType="textPassword"
         android:padding="10dp"
         android:singleLine="true"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
         android:textSize="@dimen/headerL" />
 
 
@@ -87,24 +80,21 @@
         android:inputType="textPassword"
         android:padding="10dp"
         android:singleLine="true"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
         android:textSize="@dimen/headerL" />
 
     <CheckBox
-
+        style="@style/MyCheckBoxStyle"
         android:padding="10dp"
         android:id="@+id/terms_conditions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="7dp"
         android:text="@string/terms_conditions"
-        android:textColor="@color/white"
-        android:textSize="@dimen/headerL" />
+        />
     <View
         android:layout_width="fill_parent"
         android:layout_height="1px"
-        android:background="@color/white_greyish" />
+        android:background="@color/surface" />
 
     <Button
         android:id="@+id/signUpBtn"
@@ -125,12 +115,11 @@
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/already_user"
-        android:textColor="@color/white_greyish"
         android:textSize="@dimen/headerL" />
     <View
         android:layout_width="fill_parent"
         android:layout_height="1px"
-        android:background="@color/white_greyish" />
+        android:background="@color/surface" />
 
 </LinearLayout>
     <ProgressBar

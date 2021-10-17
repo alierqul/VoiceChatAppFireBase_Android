@@ -4,7 +4,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardBackgroundColor="@color/gri"
+    card_view:cardBackgroundColor="@color/incoming"
     card_view:cardCornerRadius="5dp"
     card_view:cardElevation="4dp"
     card_view:cardUseCompatPadding="true"
@@ -53,7 +53,6 @@
         <TextView
             android:id="@+id/count"
             android:textSize="@dimen/headerL"
-            android:textColor="@color/white"
             android:textAlignment="center"
             android:text="59"
             android:layout_alignParentTop="true"

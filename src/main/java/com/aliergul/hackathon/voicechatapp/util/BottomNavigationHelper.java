@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 
 import com.aliergul.hackathon.voicechatapp.R;
 import com.aliergul.hackathon.voicechatapp.home.ActivityMessages;
+import com.aliergul.hackathon.voicechatapp.info.ActivityInfo;
 import com.aliergul.hackathon.voicechatapp.profile.ActivityProfile;
 import com.aliergul.hackathon.voicechatapp.search.ActivitySearch;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -56,6 +57,12 @@ public class BottomNavigationHelper {
 
                     case R.id.nav_search: {
                         Intent intent1 = new Intent(context, ActivitySearch.class);
+                        context.startActivity(intent1);
+                        callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                        break;
+                    }
+                    case R.id.nav_Info: {
+                        Intent intent1 = new Intent(context, ActivityInfo.class);
                         context.startActivity(intent1);
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;

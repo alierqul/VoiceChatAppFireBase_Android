@@ -71,7 +71,11 @@ public class ActivityNewMessage extends FragmentActivity {
         binding.containerMessages.setLayoutManager(manager);
         actUser=FirebaseHelper.getActiveUser();
         friendUser=FirebaseHelper.getFriendUser();
-
+        FirebaseDatabase.getInstance().getReference()
+                .child(MyUtil.COLUMN_MESSAGES)
+                .child(actUser.getUserUID())
+                .child(friendUser.getUserUID())
+                .child("count").setValue(0);
         clickItemView();
     }
 
@@ -100,10 +104,10 @@ public class ActivityNewMessage extends FragmentActivity {
             @Override
             public void afterTextChanged(Editable key) {
                 if(key!=null && key.length()>0){
-                    binding.imgSendbtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_send, null));
+                    binding.imgSendbtn.setImageResource(R.drawable.ic_send);
                     choseSend=EChoseSend.TEXT;
                 }else{
-                    binding.imgSendbtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice, null));
+                    binding.imgSendbtn.setImageResource(R.drawable.ic_voice);
                     choseSend=EChoseSend.AUDIO;
                 }
             }
@@ -123,7 +127,7 @@ public class ActivityNewMessage extends FragmentActivity {
                         if(checkPermissions()) {
                             MyUtil.playBeep();
                             binding.recordTimer.setVisibility(View.VISIBLE);
-                            binding.imgSendbtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle, null));
+                            binding.imgSendbtn.setImageResource(R.drawable.ic_pause_circle);
 
                             startRecording();
                         }
@@ -131,7 +135,8 @@ public class ActivityNewMessage extends FragmentActivity {
 
                         stopRecording();
 
-                        binding.imgSendbtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice, null));
+
+                        binding.imgSendbtn.setImageResource(R.drawable.ic_voice);
                         binding.recordTimer.setVisibility(View.GONE);
 
                     }
@@ -157,18 +162,25 @@ public class ActivityNewMessage extends FragmentActivity {
 
     private void stopRecording() {
         if(isRecording){
-            binding.recordTimer.stop();
-            isRecording=false;
-            mediaRecorder.stop();
-            mediaRecorder.release();
-            mediaRecorder = null;
+            try{
+                binding.recordTimer.stop();
+                isRecording=false;
+                mediaRecorder.stop();
+                mediaRecorder.release();
+                mediaRecorder = null;
 
-            long time=SystemClock.elapsedRealtime()-binding.recordTimer.getBase();
+                long time=SystemClock.elapsedRealtime()-binding.recordTimer.getBase();
 
-            if(time>=1000L){
-                binding.btnSend.setEnabled(false);
-                effectDialogOpen();
+                if(time>=1000L){
+                    binding.btnSend.setEnabled(false);
+                    effectDialogOpen();
+                }
+            }catch (Exception e){
+                mediaRecorder.reset();
+                mediaRecorder.release();
+                mediaRecorder = null;
             }
+
         }
 
     }
@@ -234,6 +246,7 @@ public class ActivityNewMessage extends FragmentActivity {
             mDatabase.child(MyUtil.COLUMN_MESSAGES)
                     .child(actUser.getUserUID())
                     .child(friendUser.getUserUID())
+                    .orderByChild(MyUtil.POSTDATE)
                     .addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -244,18 +257,18 @@ public class ActivityNewMessage extends FragmentActivity {
                                 Post post=s.getValue(Post.class);
                                 listPost.add(post);
                                 binding.containerMessages.smoothScrollToPosition(listPost.size()-1);
+
                             }catch (Exception e){
                                 Log.e(TAG,"onDataChange Exception ="+e.getLocalizedMessage());
                                 e.printStackTrace();
                             }
 
                         }
+
                         AdapterListMessage adapter=new AdapterListMessage(listPost,ActivityNewMessage.this);
                         binding.containerMessages.setAdapter(adapter);
-                        mDatabase.child(MyUtil.COLUMN_MESSAGES)
-                                .child(actUser.getUserUID())
-                                .child(friendUser.getUserUID())
-                                .child("count").setValue(0);
+
+
                     }
 
                 }

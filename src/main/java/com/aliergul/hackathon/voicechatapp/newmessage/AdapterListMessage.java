@@ -7,19 +7,18 @@ import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aliergul.hackathon.voicechatapp.R;
 import com.aliergul.hackathon.voicechatapp.databinding.LineTextMessageBinding;
 import com.aliergul.hackathon.voicechatapp.databinding.LineVoiceMessageBinding;
 import com.aliergul.hackathon.voicechatapp.model.Post;
-import com.aliergul.hackathon.voicechatapp.util.MediaPlayerHelper;
 import com.aliergul.hackathon.voicechatapp.util.MyUtil;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -30,7 +29,9 @@ public class AdapterListMessage extends RecyclerView.Adapter {
     private List<Post> liste;
     private ActivityNewMessage mContext;
     private String myUid;
-
+    private enum ERunning{
+        PAUSE,RESUME,STOP
+    }
     public AdapterListMessage(List<Post> liste, ActivityNewMessage mContext) {
         this.liste = liste;
         this.mContext = mContext;
@@ -78,7 +79,7 @@ public class AdapterListMessage extends RecyclerView.Adapter {
 
                 holder.binding.tvDate.setLayoutParams(lnp);
                 //messaj
-                CardView.LayoutParams paramMessage = (CardView.LayoutParams) holder.binding.tvMessage.getLayoutParams();
+                LinearLayout.LayoutParams paramMessage = (LinearLayout.LayoutParams) holder.binding.tvMessage.getLayoutParams();
                 paramMessage.gravity = Gravity.END;
                 holder.binding.tvMessage.setLayoutParams(paramMessage);
 
@@ -95,7 +96,7 @@ public class AdapterListMessage extends RecyclerView.Adapter {
                 params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
                 //messaj
-                CardView.LayoutParams paramMessage = (CardView.LayoutParams) holder.binding.tvMessage.getLayoutParams();
+                LinearLayout.LayoutParams paramMessage = (LinearLayout.LayoutParams) holder.binding.tvMessage.getLayoutParams();
                 paramMessage.gravity = Gravity.START;
                 holder.binding.tvMessage.setLayoutParams(paramMessage);
             }
@@ -122,13 +123,10 @@ public class AdapterListMessage extends RecyclerView.Adapter {
                 holder.binding.cardVoice.setBackground(mContext.getDrawable(R.drawable.shape_bg_incoming_bubble));
 
             }
-            holder.binding.listImageView.setOnClickListener(v -> {
-                Uri uri = Uri.parse(liste.get(position).getVoiceURL());
-                MediaPlayerHelper mpHelper = new MediaPlayerHelper(mContext, holder.binding.playerSeekbar, holder.binding.listImageView);
-                mpHelper.playAudio(uri);
 
+            Uri uri = Uri.parse(liste.get(position).getVoiceURL());
+            holder.getUri(uri);
 
-            });
 
         }
 
@@ -156,15 +154,120 @@ public class AdapterListMessage extends RecyclerView.Adapter {
 
     public class VoiceHolder extends RecyclerView.ViewHolder {
         public LineVoiceMessageBinding binding;
-
+        private Uri uri;
 
         public VoiceHolder(@NonNull LineVoiceMessageBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            binding.listImageView.setOnClickListener(v->{
+                if(isPlaying==ERunning.STOP){
+                    binding.listImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_pause_circle, null));
+                    playAudio(uri);
+                }else if(isPlaying==ERunning.RESUME){
+                    pauseAudio();
+                }else if(isPlaying==ERunning.PAUSE){
+                    resumeAudio();
+                }
+            });
+
+            binding.playerSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                    pauseAudio();
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    int progress = seekBar.getProgress();
+                    mediaPlayer.seekTo(progress);
+                    resumeAudio();
+                }
+            });
+
+        }
+        public void getUri(Uri uri){
+            this.uri=uri;
+        }
+
+        //MediaPlayer
+        private MediaPlayer mediaPlayer = null;
+        private ERunning isPlaying = ERunning.STOP;
+        private Runnable updateSeekbar;
+        private Handler seekbarHandler;
+
+
+
+
+        public void playAudio(Uri uri) {
+
+                isPlaying = ERunning.RESUME;
+                mediaPlayer = new MediaPlayer();
+
+                try {
+                    mediaPlayer.setDataSource(mContext,uri);
+                    mediaPlayer.prepare();
+                    mediaPlayer.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+                //Play the audio
+
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        stopAudio();
+
+                    }
+                });
+
+                binding.playerSeekbar.setMax(mediaPlayer.getDuration());
+
+                seekbarHandler = new Handler();
+                updateRunnable();
+                seekbarHandler.postDelayed(updateSeekbar, 0);
+
 
 
         }
+        private void pauseAudio() {
+            mediaPlayer.pause();
+            binding.listImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_play_circle, null));
+            isPlaying = ERunning.PAUSE;
+            seekbarHandler.removeCallbacks(updateSeekbar);
+        }
 
+        private void resumeAudio() {
+            mediaPlayer.start();
+            binding.listImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_pause_circle, null));
+            isPlaying = ERunning.RESUME;
 
+            updateRunnable();
+            seekbarHandler.postDelayed(updateSeekbar, 0);
+
+        }
+        private void updateRunnable() {
+            updateSeekbar = new Runnable() {
+                @Override
+                public void run() {
+                    binding.playerSeekbar.setProgress(mediaPlayer.getCurrentPosition());
+                    seekbarHandler.postDelayed(this, 500);
+                }
+            };
+        }
+        public void stopAudio() {
+            //Stop The Audio
+            binding.listImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_play_circle, null));
+            isPlaying = ERunning.STOP;
+            mediaPlayer.stop();
+            binding.playerSeekbar.removeCallbacks(updateSeekbar);
+        }
+        //MediaPlayer END
     }
 }

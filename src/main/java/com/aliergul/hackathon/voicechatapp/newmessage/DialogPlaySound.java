@@ -29,7 +29,6 @@ public class DialogPlaySound extends DialogFragment implements View.OnClickListe
         //path== /storage/emulated/0/Android/data/com.aliergul.hackathon.voicechatapp/files/Recording_temp.3gp
         this.fileName=fileName;
         fileNameNew = mContext.getExternalFilesDir("/").getAbsolutePath()+ "/audioRecordNew.mp3";
-        String fileNameMerge = mContext.getExternalFilesDir("/").getAbsolutePath() + "/audioRecordMerge.mp3";
         this.onSenVoiceCloud=onSenVoiceCloud;
 
     }
@@ -41,17 +40,6 @@ public class DialogPlaySound extends DialogFragment implements View.OnClickListe
     private  MediaRecorder recorder = null;
     private  Context mContext;
     private IOnSenVoiceCloud onSenVoiceCloud;
-
-
-    private void checkClear(){
-        binding.rdCase.setChecked(false);
-        binding.rdChipMunk.setChecked(false);
-        binding.rdOrinal.setChecked(false);
-        binding.rdRadio.setChecked(false);
-        binding.rdRobot.setChecked(false);
-    }
-
-
 
     @NonNull
     @Override
@@ -73,6 +61,9 @@ public class DialogPlaySound extends DialogFragment implements View.OnClickListe
             else
                 onSenVoiceCloud.onSendVoiceCloud(fileName);
 
+        });
+        binding.btnCancel.setOnClickListener(v->{
+            this.dismiss();
         });
 
         return builder.create();
@@ -98,8 +89,10 @@ public class DialogPlaySound extends DialogFragment implements View.OnClickListe
             boolean isEffectAddedOnce = true;
             start(fileNameNew);
         } else if (rc == FFmpeg.RETURN_CODE_CANCEL) {
+            hideProgress();
             Log.i("GetInfo", "Komut yürütme kullanıcı tarafından iptal edildi.");
         } else {
+            hideProgress();
             Log.i(
                     "GetInfo",
                     String.format(
@@ -121,11 +114,11 @@ public class DialogPlaySound extends DialogFragment implements View.OnClickListe
             } catch (IOException e) {
                 Log.e(TAG, "prepare() failed");
             }
-                binding.btnPlay.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_pause_circle, null));
+
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
-                    binding.btnPlay.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_play_circle, null));
+
                 }
             });
 
@@ -216,7 +209,7 @@ private void playCave(String fileName1 , String fileName2) {
 
     @Override
     public void onClick(View view) {
-        checkClear();
+
         switch (view.getId()) {
             case R.id.rd_Radio: {
 
@@ -250,6 +243,6 @@ private void playCave(String fileName1 , String fileName2) {
 
 
         }
-        ((RadioButton) view).setChecked(true);
+
     }
 }

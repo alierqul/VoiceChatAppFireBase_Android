@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.aliergul.hackathon.voicechatapp.R;
 import com.aliergul.hackathon.voicechatapp.databinding.LoginFragmentNotLoginBinding;
+import com.aliergul.hackathon.voicechatapp.util.FirebaseHelper;
 import com.aliergul.hackathon.voicechatapp.util.MyUtil;
 
 
@@ -39,11 +40,12 @@ public class FragmentNotLogin extends Fragment {
             Log.d(TAG, "setOnClickListener: ");
             fragmentMove.openFragment(IMoveFragment.LOGIN_PANEL);
         });
+
         binding.forgotButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(isEmailAndPaswordConrol()){
-
+                    FirebaseHelper.sendPaswordResetEmail(getContext(),binding.registeredEmailid.getText().toString());
                 }
             }
         });

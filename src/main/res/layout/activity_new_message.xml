@@ -5,29 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".newmessage.ActivityNewMessage"
-    android:background="@color/gri">
+    android:background="@color/background">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarMessages"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottomNavigatorHeight"
-        android:background="@color/blue">
+        android:background="@color/primary">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <ImageView
                 android:id="@+id/btn_Back"
-                android:src="@drawable/ic_back"
                 android:layout_width="30dp"
-                android:layout_height="30dp"/>
+                android:layout_height="30dp"
+                android:src="@drawable/ic_back"
+                android:tint="@color/on_primary"
+                tools:ignore="UseAppTint" />
 
             <TextView
-
+                android:textColor="@color/on_primary"
                 android:id="@+id/tv_friendName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="@string/navNewMessages"
-                android:textColor="@color/PrimaryTextColor"
                 android:textSize="@dimen/headerXL"
                 android:textStyle="bold" />
 
@@ -59,7 +61,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
         android:layout_toLeftOf="@id/btn_send"
-        card_view:cardBackgroundColor="@color/gri"
+        card_view:cardBackgroundColor="@color/surface"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="-15dp"
         android:layout_marginBottom="10dp"
@@ -76,7 +78,6 @@
             <EditText
                 android:textAlignment="textStart"
                 android:id="@+id/edtMessage"
-                android:textColor="@color/PrimaryTextColor"
                 android:layout_centerVertical="true"
                 android:hint="Mesajınız"
                 android:layout_width="match_parent"

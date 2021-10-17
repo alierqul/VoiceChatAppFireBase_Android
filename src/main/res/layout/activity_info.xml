@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".info.ActivityInfo">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarInfo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottomNavigatorHeight"
+        android:background="@color/primary">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textColor="@color/on_primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/homeInfo"
+                android:textStyle="bold"
+                android:textSize="@dimen/headerXL"/>
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <TextView
+        android:id="@+id/tv2"
+        android:textSize="@dimen/headerXXXL"
+        android:textStyle="bold"
+        android:layout_marginTop="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/toolbarInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mobile App Hackathon"/>
+    <TextView
+        android:id="@+id/tv1"
+        android:textSize="@dimen/headerXXXL"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:layout_below="@id/tv2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ali ERGÜL"/>
+    <TextView
+        android:id="@+id/tv3"
+        android:textSize="@dimen/headerXL"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/paddingXL"
+        android:layout_below="@id/tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Alierqul@hotmail.com"/>
+    <TextView
+        android:id="@+id/tv4"
+        android:textSize="@dimen/headerXL"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/paddingM"
+        android:layout_below="@id/tv3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="05436168048"/>
+    <TextView
+        android:textAlignment="center"
+        android:id="@+id/tv5"
+        android:textSize="@dimen/headerXL"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/paddingM"
+        android:layout_below="@id/tv4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/github"/>
+
+    <include layout="@layout/bottom_navigation_menu"/>
+
+</RelativeLayout>

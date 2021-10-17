@@ -70,6 +70,9 @@ public class ActivityMessages extends AppCompatActivity {
         mAuth=FirebaseAuth.getInstance();
         mAuth.addAuthStateListener(listenerAccount(mAuth));
         if(mAuth.getCurrentUser()!=null){
+            FirebaseDatabase.getInstance().getReference().child(MyUtil.COLUMN_USERS)
+                    .child(mAuth.getCurrentUser().getUid()).child("onlineDate").setValue(System.currentTimeMillis()+"");
+
             FirebaseHelper.getActiveUserData();
             getFirebaseUserdata();
             setupNoifications();
@@ -138,9 +141,27 @@ public class ActivityMessages extends AppCompatActivity {
                     openLoginPanel();
                 }else{
                     Log.d(TAG,"onAuthStateChanged TRUE");
+                    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
+                    mDatabase.child(MyUtil.COLUMN_USERS).child(user.getUid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                           try{
+                               Users u = snapshot.getValue(Users.class);
+                               Log.w(TAG,"getActiveUserData ="+u);
+                               FirebaseHelper.setActiveUser(u);
+                           }catch (Exception e){
+                               e.printStackTrace();
+                           }
 
 
+                        }
 
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
             }
         };
@@ -167,6 +188,7 @@ public class ActivityMessages extends AppCompatActivity {
                                 adapter.setListe(listUser);
                                 FirebaseHelper.setListFriendUsers(listUser);
                             }catch (Exception e){
+                                e.printStackTrace();
                             }
                         }
                         @Override

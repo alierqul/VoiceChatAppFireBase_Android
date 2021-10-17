@@ -53,10 +53,10 @@ static {
                 try{
                     Log.w(TAG,"getActiveUserData DataSnapshot ="+snapshot.getKey());
                     Log.w(TAG,"getActiveUserData DataSnapshot ="+snapshot.getValue());
-                    activeUser = snapshot.getValue(Users.class);
+                    Users u = snapshot.getValue(Users.class);
+                    activeUser=u;
                     Log.w(TAG,"getActiveUserData ="+activeUser);
-                    database.getReference().child(MyUtil.COLUMN_USERS)
-                            .child(activeUser.getUserUID()).child("onlineDate").setValue(System.currentTimeMillis()+"");
+
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -131,7 +131,7 @@ static {
         database.getReference().child(MyUtil.COLUMN_USERS).child(activeUser.getUserUID()).child("oneSignalDeviceID").setValue(deviceID);
     }
 
-    public static void setUserOnlineDate(String log) {
+    public static void setUserOnlineDatee(String log) {
         database.getReference().child(MyUtil.COLUMN_USERS)
                 .child(activeUser.getUserUID()).child("onlineDate").setValue(log);
     }

@@ -300,13 +300,13 @@ public class ActivityNewMessage extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        FirebaseHelper.setUserOnlineDate(MyUtil.IS_ONLINE);
+        FirebaseHelper.setUserOnlineDatee(MyUtil.IS_ONLINE);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        FirebaseHelper.setUserOnlineDate(System.currentTimeMillis()+"");
+        FirebaseHelper.setUserOnlineDatee(System.currentTimeMillis()+"");
     }
 
     private void writeDatabese(Post p) {

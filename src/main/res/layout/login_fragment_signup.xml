@@ -13,6 +13,7 @@
    >
 
     <TextView
+        android:textColor="@color/on_primary"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -22,6 +23,7 @@
         android:textStyle="bold" />
 
     <EditText
+        style="@style/MyEditBoxStyle"
         android:id="@+id/edt_fullName"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -33,10 +35,11 @@
         android:inputType="textCapWords"
         android:padding="10dp"
         android:singleLine="true"
-        android:textSize="@dimen/headerL" />
+         />
 
 
     <EditText
+        style="@style/MyEditBoxStyle"
         android:id="@+id/edt_userEmailId"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -53,6 +56,7 @@
 
 
     <EditText
+        style="@style/MyEditBoxStyle"
         android:id="@+id/password"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -68,6 +72,7 @@
 
 
     <EditText
+        style="@style/MyEditBoxStyle"
         android:id="@+id/confirmPassword"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -94,7 +99,7 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="1px"
-        android:background="@color/surface" />
+        android:background="@color/background" />
 
     <Button
         android:id="@+id/signUpBtn"
@@ -116,10 +121,7 @@
         android:padding="10dp"
         android:text="@string/already_user"
         android:textSize="@dimen/headerL" />
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:background="@color/surface" />
+
 
 </LinearLayout>
     <ProgressBar

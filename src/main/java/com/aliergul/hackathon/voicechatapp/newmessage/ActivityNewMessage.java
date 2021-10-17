@@ -35,6 +35,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.onesignal.OneSignal;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.File;
@@ -48,7 +51,6 @@ import java.util.Locale;
 public class ActivityNewMessage extends FragmentActivity {
     private final String recordPermission = Manifest.permission.RECORD_AUDIO;
     private static final String TAG = "ActivityNewMessage";
-    private static final int FRAGMENT_ID = 100;
     private int PERMISSION_CODE = 200;
     private boolean isRecording = false;
     private MediaRecorder mediaRecorder;
@@ -71,15 +73,26 @@ public class ActivityNewMessage extends FragmentActivity {
         binding.containerMessages.setLayoutManager(manager);
         actUser=FirebaseHelper.getActiveUser();
         friendUser=FirebaseHelper.getFriendUser();
+        if(friendUser.getUserPhoto().length()>5){
+            Picasso.get()
+                    .load(friendUser.getUserPhoto())
+                    .resize(30, 30)
+                    .centerCrop()
+                    .into(binding.friendProfileImg);
+        }
+       
+        binding.tvFriendName.setText(friendUser.getUserName());
         FirebaseDatabase.getInstance().getReference()
                 .child(MyUtil.COLUMN_MESSAGES)
                 .child(actUser.getUserUID())
                 .child(friendUser.getUserUID())
                 .child("count").setValue(0);
         clickItemView();
+
     }
 
     private void clickItemView() {
+
         FirebaseHelper.reWriteOneSignalKey();
         binding.btnBack.setOnClickListener(v->{
             onBackPressed();
@@ -88,6 +101,7 @@ public class ActivityNewMessage extends FragmentActivity {
         voiceOpenDialog();
         getListMessages();
         btnSeendVoiceandTextChosee();
+
     }
     private void btnSeendVoiceandTextChosee() {
         binding.edtMessage.addTextChangedListener(new TextWatcher() {
@@ -112,6 +126,7 @@ public class ActivityNewMessage extends FragmentActivity {
                 }
             }
         });
+
     }
     /**
      * ses Kayıt fragment aç

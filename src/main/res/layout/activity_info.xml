@@ -49,6 +49,7 @@
         android:layout_height="wrap_content"
         android:text="Ali ERGÜL"/>
     <TextView
+        android:autoLink="email"
         android:id="@+id/tv3"
         android:textSize="@dimen/headerXL"
         android:textStyle="bold"
@@ -59,6 +60,7 @@
         android:layout_height="wrap_content"
         android:text="Alierqul@hotmail.com"/>
     <TextView
+        android:autoLink="phone"
         android:id="@+id/tv4"
         android:textSize="@dimen/headerXL"
         android:textStyle="bold"
@@ -69,6 +71,7 @@
         android:layout_height="wrap_content"
         android:text="05436168048"/>
     <TextView
+        android:autoLink="web"
         android:textAlignment="center"
         android:id="@+id/tv5"
         android:textSize="@dimen/headerXL"

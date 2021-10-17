@@ -17,6 +17,7 @@ import com.aliergul.hackathon.voicechatapp.R;
 import com.aliergul.hackathon.voicechatapp.databinding.LoginFragmentSignupBinding;
 import com.aliergul.hackathon.voicechatapp.home.ActivityMessages;
 import com.aliergul.hackathon.voicechatapp.model.Users;
+import com.aliergul.hackathon.voicechatapp.util.MyConstSecretID;
 import com.aliergul.hackathon.voicechatapp.util.MyUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -43,13 +44,19 @@ public class FragmentRegisterPanel extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding=LoginFragmentSignupBinding.inflate(inflater, container,false);
-        clickItemView();
         setupOneSignal();
+        clickItemView();
+
         binding.signUpBtn.setEnabled(true);
         return binding.getRoot();
     }
 
     private void setupOneSignal() {
+        OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
+
+        // OneSignal Initialization
+        OneSignal.initWithContext(getActivity());
+        OneSignal.setAppId(MyConstSecretID.ONESIGNAL_APP_ID);
         OSDeviceState device = OneSignal.getDeviceState();
 
         oneSignalDeviceID = device.getUserId();
@@ -78,6 +85,7 @@ public class FragmentRegisterPanel extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
+
                                 createUser.setUserUID(firebaseUser.getUid());
                                 createUser.setOneSignalDeviceID(oneSignalDeviceID);
                             updateUI(createUser);

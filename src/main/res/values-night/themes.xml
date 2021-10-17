@@ -12,16 +12,15 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="android:textColor">@color/on_surface</item>
-        <item name="android:checkboxStyle">@color/on_surface</item>
-        <item name="android:editTextColor">@color/on_surface</item>
-        <item name="android:textColorHint">@color/on_surface</item>
-        <item name="android:textColorPrimary">@color/surface</item>
-        <item name="android:textColorSecondary">@color/on_background</item>
-        <item name="android:textColorTertiary">@color/on_primary</item>
-        <item name="android:textColorPrimaryInverse">@color/on_primary</item>
-        <item name="android:textColorSecondaryInverse">@color/on_primary</item>
-        <item name="android:textColorTertiaryInverse">@color/on_primary</item>
+        <item name="android:textColor">@color/on_secondary</item>
+        <item name="android:editTextColor">@color/on_secondary</item>
+        <item name="android:textColorHint">@color/on_secondary</item>
+        <item name="android:textColorPrimary">@color/on_secondary</item>
+        <item name="android:textColorSecondary">@color/on_surface</item>
+        <item name="android:textColorTertiary">@color/on_secondary</item>
+        <item name="android:textColorPrimaryInverse">@color/on_secondary</item>
+        <item name="android:textColorSecondaryInverse">@color/on_secondary</item>
+        <item name="android:textColorTertiaryInverse">@color/on_secondary</item>
 
     </style>
     <style name="MyCheckBoxStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">

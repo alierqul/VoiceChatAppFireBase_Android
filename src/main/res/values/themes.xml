@@ -28,4 +28,11 @@
         <item name="buttonTint">@color/primary</item>
         <item name="android:textSize">@dimen/headerL</item>
     </style>
+    <style name="MyEditBoxStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/on_surface</item>
+        <item name="android:tint">@color/on_surface</item>
+        <item name="android:textColorHint">@color/on_surface</item>
+        <item name="android:textSize">@dimen/headerL</item>
+
+    </style>
 </resources>

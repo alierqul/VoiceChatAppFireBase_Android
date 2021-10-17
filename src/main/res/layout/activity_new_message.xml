@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".newmessage.ActivityNewMessage"
     android:background="@color/background">
     <androidx.appcompat.widget.Toolbar
@@ -22,15 +23,26 @@
                 android:src="@drawable/ic_back"
                 android:tint="@color/on_primary"
                 tools:ignore="UseAppTint" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_marginStart="@dimen/paddingM"
+                android:id="@+id/friendProfileImg"
+                android:layout_toRightOf="@id/btn_Back"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_fullname"
+                app:civ_border_color="@color/on_primary"
+                app:civ_border_width="2dp"/>
 
             <TextView
-                android:textColor="@color/on_primary"
                 android:id="@+id/tv_friendName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="@string/navNewMessages"
-                android:textSize="@dimen/headerXL"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/paddingL"
+                android:layout_toRightOf="@id/friendProfileImg"
+                android:text="Ali ERGÜl"
+                android:textColor="@color/on_primary"
+                android:textSize="@dimen/headerL"
                 android:textStyle="bold" />
 
         </RelativeLayout>

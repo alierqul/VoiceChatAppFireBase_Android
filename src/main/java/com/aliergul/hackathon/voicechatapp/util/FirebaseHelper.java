@@ -121,7 +121,8 @@ static {
     }
 
     public static void setUserOnlineDate(String log) {
-        database.getReference().child(MyUtil.COLUMN_USERS).child(activeUser.getUserUID()).child("onlineDate").setValue(log);
+        database.getReference().child(MyUtil.COLUMN_USERS)
+                .child(activeUser.getUserUID()).child("onlineDate").setValue(log);
     }
 
     public static void sendVerificationEmail(Context mContext){

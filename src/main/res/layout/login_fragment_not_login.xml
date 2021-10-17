@@ -7,6 +7,7 @@
     android:padding="50dp">
 
     <TextView
+        android:textColor="@color/on_primary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
@@ -14,15 +15,16 @@
         android:textSize="@dimen/headerXXL"
         android:textStyle="bold"/>
     <TextView
+        android:textColor="@color/on_primary"
         android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:text="@string/registered_emailid"
-        android:textSize="@dimen/headerL"
         android:textStyle="bold"/>
 
     <EditText
+        style="@style/MyEditBoxStyle"
         android:id="@+id/registered_emailid"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -33,9 +35,7 @@
         android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:padding="10dp"
-        android:singleLine="true"
-
-        android:textSize="@dimen/headerL" />
+        android:singleLine="true" />
 
     <View
         android:layout_width="fill_parent"
@@ -49,24 +49,24 @@
 
 
         <TextView
+            android:textColor="@color/on_primary"
             android:id="@+id/forgot_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:gravity="right"
             android:text="@string/forgotPassword"
-            android:textSize="@dimen/headerL"
             android:layout_marginTop="10dp"
             android:textStyle="bold" />
 
 
         <TextView
+            android:textColor="@color/on_primary"
             android:layout_marginTop="10dp"
             android:id="@+id/backToLoginBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/back"
-            android:textSize="@dimen/headerL"
             android:textStyle="bold" />
 
     </RelativeLayout>

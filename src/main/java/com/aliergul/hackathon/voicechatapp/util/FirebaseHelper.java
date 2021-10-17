@@ -44,11 +44,22 @@ static {
 
     public static void getActiveUserData() {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child(MyUtil.COLUMN_USERS).child(fireUser.getUid()).addValueEventListener(new ValueEventListener() {
+        mDatabase.child(MyUtil.COLUMN_USERS)
+                .child(FirebaseAuth.getInstance()
+                        .getCurrentUser().getUid())
+                .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                activeUser = snapshot.getValue(Users.class);
-                Log.w(TAG,"getActiveUserData ="+activeUser);
+                try{
+                    Log.w(TAG,"getActiveUserData DataSnapshot ="+snapshot.getKey());
+                    Log.w(TAG,"getActiveUserData DataSnapshot ="+snapshot.getValue());
+                    activeUser = snapshot.getValue(Users.class);
+                    Log.w(TAG,"getActiveUserData ="+activeUser);
+                    database.getReference().child(MyUtil.COLUMN_USERS)
+                            .child(activeUser.getUserUID()).child("onlineDate").setValue(System.currentTimeMillis()+"");
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
             }
 

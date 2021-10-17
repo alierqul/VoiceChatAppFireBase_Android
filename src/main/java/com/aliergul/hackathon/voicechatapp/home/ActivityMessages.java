@@ -66,9 +66,17 @@ public class ActivityMessages extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding=ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        listUser=new ArrayList<>();
         mAuth=FirebaseAuth.getInstance();
         mAuth.addAuthStateListener(listenerAccount(mAuth));
+        if(mAuth.getCurrentUser()!=null){
+            FirebaseHelper.getActiveUserData();
+            getFirebaseUserdata();
+            setupNoifications();
+            setupRecyclerView();
+            setupBottomNavigationView();
+        }
+
     }
 
 
@@ -130,13 +138,9 @@ public class ActivityMessages extends AppCompatActivity {
                     openLoginPanel();
                 }else{
                     Log.d(TAG,"onAuthStateChanged TRUE");
-                    listUser=new ArrayList<>();
-                    FirebaseHelper.getActiveUserData();
-                    getFirebaseUserdata();
-                    setupNoifications();
-                    setupRecyclerView();
-                    setupBottomNavigationView();
-                    FirebaseHelper.setUserOnlineDate(System.currentTimeMillis()+"");
+
+
+
                 }
             }
         };
